@@ -4,13 +4,7 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      global: true,
-      secret: 'SECRETKEYSECRETKEYSECRETKEYSECRETKEY',
-      signOptions: { expiresIn: '60s' },
-    }),
-  ],
+  imports: [JwtModule.register({ global: true })],
   controllers: [AuthController],
   providers: [AuthService],
 })

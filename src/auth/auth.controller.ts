@@ -22,12 +22,13 @@ export class AuthController {
 
     // 로그인 성공 시 처리
     const accessToken = await this.authService.createAccessToken(id);
+    const refreshToken = await this.authService.createRefreshToken(id);
     // 로그인 성공 응답
     return res
       .status(200) // 상태코드 지정
       .json({
         accessToken: accessToken,
-        refreshToken: 'sad',
+        refreshToken: refreshToken,
       } as LoginResponseDto);
   }
 

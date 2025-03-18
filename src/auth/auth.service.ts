@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService) {}
-  // dummyUser 데이터로 DB 연동시 제거 예정정
+  // dummyUser 데이터로 DB 연동시 제거 예정
   private readonly users: object[] = [
     { id: 1, username: 'admin', password: '1234' },
     { id: 2, username: 'user', password: 'password' },
@@ -17,6 +17,21 @@ export class AuthService {
   }
 
   public async createAccessToken(username: string): Promise<string> {
-    return await this.jwtService.signAsync({ username: username });
+    return await this.jwtService.signAsync(
+      { username: username },
+      {
+        expiresIn: '30d',
+        secret: 'SECRETKEYSECRETKEYSECRETKEYSECRETKEY',
+      },
+    );
+  }
+  public async createRefreshToken(username: string): Promise<string> {
+    return await this.jwtService.signAsync(
+      { username: username },
+      {
+        expiresIn: '60s',
+        secret: 'SECRETKEYSECRETKEYSECRETKEYSECRETKEY',
+      },
+    );
   }
 }
