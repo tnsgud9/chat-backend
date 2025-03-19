@@ -1,12 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Permission } from 'src/common/enums/permission.enum';
+import { v4 as uuidv4 } from 'uuid';
+
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService) {}
   // dummyUser 데이터로 DB 연동시 제거 예정
   private readonly users: object[] = [
-    { id: 1, username: 'admin', password: '1234' },
-    { id: 2, username: 'user', password: 'password' },
+    {
+      uid: uuidv4(),
+      username: 'admin',
+      password: '1234',
+      nickname: 'GOD',
+      permission: Permission.ADMIN,
+    },
+    {
+      uid: uuidv4(),
+      username: 'user',
+      password: 'password',
+      nickname: 'James',
+      permission: Permission.USER,
+    },
   ];
 
   // dummyUser에서 유효한 username과 password인지 확인하는 메서드

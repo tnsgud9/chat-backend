@@ -23,6 +23,12 @@ export class AuthController {
     // 로그인 성공 시 처리
     const accessToken = await this.authService.createAccessToken(id);
     const refreshToken = await this.authService.createRefreshToken(id);
+
+    // 쿠키에 토큰 저장
+    res.setHeader('Authorization', `Bearer ${accessToken}`);
+    res.cookie('access_token', accessToken, { httpOnly: true });
+    res.cookie('refresh_token', refreshToken, { httpOnly: true });
+
     // 로그인 성공 응답
     return res
       .status(200) // 상태코드 지정
@@ -38,7 +44,11 @@ export class AuthController {
   }
 
   @Post(ApiRoutes.Auth.REFRESH)
-  async AuthRefresh() {}
+  async AuthRefresh() {
+    const accessToken = await this.authService.createAccessToken(id);
+    res.setHeader('Authorization', `Bearer ${accessToken}`);
+    res.cookie('access_token', accessToken, { httpOnly: true });
+  }
 
   @Post(ApiRoutes.Auth.LOGOUT)
   async AuthLogout() {}
