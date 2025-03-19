@@ -4,6 +4,7 @@ export type LoginRequestDto = {
 };
 
 export type LoginResponseDto = {
+  nickname: string;
   accessToken: string;
   refreshToken: string;
 };

@@ -9,13 +9,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post(ApiRoutes.Auth.LOGIN)
-  async AuthLogin(
+  async authLogin(
     @Body() body: LoginRequestDto,
     @Res() res: Response,
   ): Promise<Response> {
     // 대충 로그인 유효성을 검증하는 코드
     const { id, password } = body;
-    if (!this.authService.isValidCredentials(id, password)) {
+
+    const authEntity = this.authService.getAccount(id, password);
+    if (authEntity === undefined) {
       // 로그인 실패 응답
       return res.status(401);
     }
@@ -33,23 +35,18 @@ export class AuthController {
     return res
       .status(200) // 상태코드 지정
       .json({
+        nickname: authEntity.nickname,
         accessToken: accessToken,
         refreshToken: refreshToken,
       } as LoginResponseDto);
   }
 
   @Get(ApiRoutes.Auth.SIGNUP)
-  AuthSignup() {
-    return 'asd';
-  }
+  authSignup() {}
 
   @Post(ApiRoutes.Auth.REFRESH)
-  async AuthRefresh() {
-    const accessToken = await this.authService.createAccessToken(id);
-    res.setHeader('Authorization', `Bearer ${accessToken}`);
-    res.cookie('access_token', accessToken, { httpOnly: true });
-  }
+  async authRefresh() {}
 
   @Post(ApiRoutes.Auth.LOGOUT)
-  async AuthLogout() {}
+  async authLogout() {}
 }
