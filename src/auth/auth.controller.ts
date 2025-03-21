@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Res } from '@nestjs/common';
-import { LoginRequestDto, LoginResponseDto } from './auth.dto';
+import { AuthLoginRequestDto, AuthLoginResponseDto } from './auth.dto';
 import { Response } from 'express';
 import { ApiRoutes } from 'src/common/constants/api-routes';
 import { AuthService } from './auth.service';
@@ -10,7 +10,7 @@ export class AuthController {
 
   @Post(ApiRoutes.Auth.LOGIN)
   async authLogin(
-    @Body() body: LoginRequestDto,
+    @Body() body: AuthLoginRequestDto,
     @Res() res: Response,
   ): Promise<Response> {
     // 대충 로그인 유효성을 검증하는 코드
@@ -38,7 +38,7 @@ export class AuthController {
         nickname: authEntity.nickname,
         accessToken: accessToken,
         refreshToken: refreshToken,
-      } as LoginResponseDto);
+      } as AuthLoginResponseDto);
   }
 
   @Get(ApiRoutes.Auth.SIGNUP)
@@ -48,5 +48,10 @@ export class AuthController {
   async authRefresh() {}
 
   @Post(ApiRoutes.Auth.LOGOUT)
-  async authLogout() {}
+  authLogout(@Res() res: Response) {
+    // 쿠키 토큰 삭제
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    return res.status(200);
+  }
 }

@@ -1,9 +1,9 @@
-export type LoginRequestDto = {
+export type AuthLoginRequestDto = {
   id: string;
   password: string;
 };
 
-export type LoginResponseDto = {
+export type AuthLoginResponseDto = {
   nickname: string;
   accessToken: string;
   refreshToken: string;
