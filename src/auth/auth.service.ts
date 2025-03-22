@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Permission } from 'src/common/enums/permission.enum';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthEntity } from '../database/entities/auth.entities';
-import { AccessTokenPayload, RefreshTokenPayload } from './types/jwt.type';
+import { AccessTokenPayload } from './types/jwt.type';
 
 @Injectable()
 export class AuthService {
@@ -40,13 +40,6 @@ export class AuthService {
   }
 
   public async createAccessToken(payload: AccessTokenPayload): Promise<string> {
-    return await this.jwtService.signAsync(payload, {
-      secret: 'SECRETKEYSECRETKEYSECRETKEYSECRETKEY',
-    });
-  }
-  public async createRefreshToken(
-    payload: RefreshTokenPayload,
-  ): Promise<string> {
     return await this.jwtService.signAsync(payload, {
       secret: 'SECRETKEYSECRETKEYSECRETKEYSECRETKEY',
     });

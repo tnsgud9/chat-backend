@@ -3,10 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthAccessTokenGuard, AuthRefreshTokenGuard } from './auth.guard';
-import {
-  AuthAccessTokenStrategy,
-  AuthRefreshTokenStrategy,
-} from './auth.strategy';
+import { AuthAccessTokenStrategy } from './auth.strategy';
 
 @Module({
   imports: [JwtModule.register({ global: true })],
@@ -16,7 +13,6 @@ import {
     AuthAccessTokenGuard,
     AuthRefreshTokenGuard,
     AuthAccessTokenStrategy,
-    AuthRefreshTokenStrategy,
   ],
 })
 export class AuthModule {}

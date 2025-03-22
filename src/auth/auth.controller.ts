@@ -1,18 +1,13 @@
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthLoginRequestDto, AuthLoginResponseDto } from './auth.dto';
-import { Request, Response } from 'express';
+  AuthLoginRequestDto,
+  AuthLoginResponseDto,
+  AuthSignupRequestDto,
+  AuthSignupResponseDto,
+} from './auth.dto';
+import { Response } from 'express';
 import { ApiRoutes } from 'src/common/constants/api-routes';
 import { AuthService } from './auth.service';
-import { AuthAccessTokenGuard, AuthRefreshTokenGuard } from './auth.guard';
-import { JwtPayload } from './types/jwt.type';
 
 @Controller()
 export class AuthController {
@@ -37,43 +32,38 @@ export class AuthController {
       id: id,
       nickname: authEntity.nickname,
     });
-    const refreshToken = await this.authService.createRefreshToken({
-      id: id,
-      nickname: authEntity.nickname,
-    });
 
     // 쿠키에 토큰 저장
     res.setHeader('Authorization', `Bearer ${accessToken}`);
     res.cookie('access_token', accessToken, { httpOnly: true });
-    res.cookie('refresh_token', refreshToken, { httpOnly: true });
-
     // 로그인 성공 응답
     return res
       .status(200) // 상태코드 지정
       .json({
         accessToken: accessToken,
-        refreshToken: refreshToken,
       } as AuthLoginResponseDto);
   }
 
-  @Get(ApiRoutes.Auth.SIGNUP)
-  authSignup() {}
+  @Post(ApiRoutes.Auth.SIGNUP)
+  async authSignup(
+    @Res() res: Response,
+    @Body() { id, nickname }: AuthSignupRequestDto,
+  ): Promise<Response> {
+    const accessToken = await this.authService.createAccessToken({
+      id: id,
+      nickname: nickname,
+    });
 
-  @UseGuards(AuthAccessTokenGuard)
-  @Get(ApiRoutes.Auth.REFRESH)
-  async authRefresh(@Req() req: Request, @Res() res: Response) {
-    const tokenPayload: JwtPayload = req.user as JwtPayload;
-    const accessToken = await this.authService.createAccessToken(tokenPayload);
-    res.setHeader('Authorization', `Bearer ${accessToken}`);
-    res.cookie('access_token', accessToken, { httpOnly: true });
-    return res.status(200).end();
+    return res.status(200).json({
+      accessToken: accessToken,
+      nickname: nickname,
+    } as AuthSignupResponseDto);
   }
 
   @Post(ApiRoutes.Auth.LOGOUT)
   authLogout(@Res() res: Response) {
     // 쿠키 토큰 삭제
     res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
     return res.status(200);
   }
 }

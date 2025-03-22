@@ -4,4 +4,3 @@ export type JwtPayload = {
 };
 
 export type AccessTokenPayload = {} & JwtPayload;
-export type RefreshTokenPayload = {} & JwtPayload;
