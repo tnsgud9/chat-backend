@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post(ApiRoutes.Auth.LOGIN)
+  @Post(ApiRoutes.Auth.Login)
   async authLogin(
     @Body() body: AuthLoginRequestDto,
     @Res() res: Response,
@@ -44,7 +44,7 @@ export class AuthController {
       } as AuthLoginResponseDto);
   }
 
-  @Post(ApiRoutes.Auth.SIGNUP)
+  @Post(ApiRoutes.Auth.Signup)
   async authSignup(
     @Res() res: Response,
     @Body() { id, nickname }: AuthSignupRequestDto,
@@ -60,7 +60,7 @@ export class AuthController {
     } as AuthSignupResponseDto);
   }
 
-  @Post(ApiRoutes.Auth.LOGOUT)
+  @Post(ApiRoutes.Auth.Logout)
   authLogout(@Res() res: Response) {
     // 쿠키 토큰 삭제
     res.clearCookie('access_token');

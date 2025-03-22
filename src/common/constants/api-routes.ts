@@ -1,8 +1,12 @@
 export const ApiRoutes = {
   Auth: {
-    LOGIN: 'auth/login',
-    SIGNUP: 'auth/signup',
-    REFRESH: 'auth/refresh',
-    LOGOUT: 'auth/logout',
+    Login: 'auth/login',
+    Signup: 'auth/signup',
+    Refresh: 'auth/refresh',
+    Logout: 'auth/logout',
+  },
+  User: {
+    Profile: 'user/profile',
+    Friends: 'user/friends',
   },
 } as const;
