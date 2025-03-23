@@ -3,6 +3,3 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class AuthAccessTokenGuard extends AuthGuard('access_token') {}
-
-@Injectable()
-export class AuthRefreshTokenGuard extends AuthGuard('refresh_token') {}
