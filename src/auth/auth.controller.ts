@@ -18,7 +18,7 @@ export class AuthController {
     @Body() body: AuthLoginRequestDto,
     @Res() res: Response,
   ): Promise<Response> {
-    // 대충 로그인 유효성을 검증하는 코드
+    // 로그인 유효성을 검증하는 코드
     const { id, password } = body;
 
     const authEntity = this.authService.getAccount(id, password);

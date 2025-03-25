@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Permission } from 'src/common/enums/permission.enum';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthEntity } from '../database/entities/auth.entities';
-import { AccessTokenPayload } from './types/jwt.type';
+import { AccessTokenPayload } from '../common/types/jwt.type';
 
 @Injectable()
 export class AuthService {
