@@ -1,20 +1,20 @@
-export type AuthLoginRequestDto = {
+export class AuthLoginRequestDto {
   id: string;
   password: string;
-};
+}
 
-export type AuthLoginResponseDto = {
+export class AuthLoginResponseDto {
   nickname: string;
   accessToken: string;
-};
+}
 
-export type AuthSignupRequestDto = {
+export class AuthSignupRequestDto {
   id: string;
   password: string;
   nickname: string;
-};
+}
 
-export type AuthSignupResponseDto = {
+export class AuthSignupResponseDto {
   nickname: string;
   accessToken: string;
-};
+}

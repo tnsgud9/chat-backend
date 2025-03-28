@@ -1,13 +1,13 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { ApiRoutes } from 'src/common/constants/api-routes';
+import { AuthService } from './auth.service';
 import {
   AuthLoginRequestDto,
   AuthLoginResponseDto,
   AuthSignupRequestDto,
   AuthSignupResponseDto,
 } from './auth.dto';
-import { Response } from 'express';
-import { ApiRoutes } from 'src/common/constants/api-routes';
-import { AuthService } from './auth.service';
 
 @Controller()
 export class AuthController {
@@ -15,19 +15,18 @@ export class AuthController {
 
   @Post(ApiRoutes.Auth.Login)
   async authLogin(
-    @Body() body: AuthLoginRequestDto,
+    @Body() { id, password }: AuthLoginRequestDto,
     @Res() res: Response,
   ): Promise<Response> {
-    // 로그인 유효성을 검증하는 코드
-    const { id, password } = body;
-
     const authEntity = this.authService.getAccount(id, password);
+
+    // 계정이 유효하지 않은 경우
     if (authEntity === undefined) {
       // 로그인 실패 응답
       return res.status(401);
     }
 
-    // 로그인 성공 시 처리
+    // 계정이 유효한 경우 access token 발급
     const accessToken = await this.authService.createAccessToken({
       id: id,
       nickname: authEntity.nickname,
@@ -47,8 +46,19 @@ export class AuthController {
   @Post(ApiRoutes.Auth.Signup)
   async authSignup(
     @Res() res: Response,
-    @Body() { id, nickname }: AuthSignupRequestDto,
+    @Body()
+    { id, password, nickname }: AuthSignupRequestDto,
   ): Promise<Response> {
+    const authEntity = this.authService.getAccount(id, password);
+
+    // 계정이 존재하는 경우
+    if (authEntity !== undefined) {
+      // 로그인 실패 응답
+      return res.status(401);
+    }
+
+    // 계정이 없는 경우 가입 진행
+    // access token 발급
     const accessToken = await this.authService.createAccessToken({
       id: id,
       nickname: nickname,

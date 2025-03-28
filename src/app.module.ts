@@ -6,7 +6,7 @@ import { UsersModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
-// import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from './config/config.service';
 
 @Module({
@@ -19,7 +19,13 @@ import { ConfigService } from './config/config.service';
       isGlobal: true,
       envFilePath: '.env' + process.env.NODE_ENV,
     }),
-    // MongooseModule.forRoot('mongodb://localhost:27017'),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.config.DB_URI,
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
