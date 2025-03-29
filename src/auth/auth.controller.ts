@@ -46,8 +46,7 @@ export class AuthController {
   @Post(ApiRoutes.Auth.Signup)
   async authSignup(
     @Res() res: Response,
-    @Body()
-    { id, password, nickname }: AuthSignupRequestDto,
+    @Body() { id, password, nickname }: AuthSignupRequestDto,
   ): Promise<Response> {
     const authEntity = this.authService.getAccount(id, password);
 

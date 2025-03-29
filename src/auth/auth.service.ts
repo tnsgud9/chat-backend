@@ -4,10 +4,14 @@ import { Permission } from 'src/common/enums/permission.enum';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthEntity } from '../database/entities/auth.entities';
 import { AccessTokenPayload } from '../common/types/jwt.type';
+import { ConfigService } from 'src/config/config.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
   // dummyUser 데이터로 DB 연동시 제거 예정
   private readonly users: AuthEntity[] = [
     {
@@ -41,7 +45,7 @@ export class AuthService {
 
   public async createAccessToken(payload: AccessTokenPayload): Promise<string> {
     return await this.jwtService.signAsync(payload, {
-      secret: 'SECRETKEYSECRETKEYSECRETKEYSECRETKEY',
+      secret: this.configService.config.SECRET_TOKEN,
     });
   }
 }
