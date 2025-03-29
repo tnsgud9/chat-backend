@@ -7,9 +7,9 @@ export class ConfigService {
   config: Configuration;
   constructor(private configService: NestConfigService) {
     this.config = {
-      DB_URI: process.env.DB_URI || 'localhost',
-      PORT: parseInt(process.env.PORT || '3000'),
-      SECRET_TOKEN: process.env.SECRET_TOKEN || 'secretsecretsecret',
+      DB_URI: configService.get('DB_URI') || 'localhost',
+      PORT: parseInt(configService.get('PORT') || '27017'),
+      SECRET_TOKEN: configService.get('SECRET_TOKEN') || 'secretsecretsecret',
     } as Configuration;
   }
 }
