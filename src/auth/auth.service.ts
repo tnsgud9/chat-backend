@@ -15,14 +15,14 @@ export class AuthService {
   // dummyUser 데이터로 DB 연동시 제거 예정
   private readonly users: Auth[] = [
     {
-      id: uuidv4(),
+      uid: uuidv4(),
       username: 'admin',
       password: '1234',
       nickname: 'GOD',
       permission: Permission.ADMIN,
     },
     {
-      id: uuidv4(),
+      uid: uuidv4(),
       username: 'user',
       password: 'password',
       nickname: 'James',
