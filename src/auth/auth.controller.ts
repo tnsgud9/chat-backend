@@ -18,7 +18,7 @@ export class AuthController {
     @Body() { id, password }: AuthLoginRequestDto,
     @Res() res: Response,
   ): Promise<Response> {
-    const authEntity = this.authService.getAccount(id, password);
+    const authEntity = await this.authService.getAccount(id, password);
 
     // 계정이 유효하지 않은 경우
     if (authEntity === undefined) {
@@ -29,7 +29,7 @@ export class AuthController {
     // 계정이 유효한 경우 access token 발급
     const accessToken = await this.authService.createAccessToken({
       uid: id,
-      nickname: authEntity.nickname,
+      nickname: authEntity!.nickname,
     });
 
     // 쿠키에 토큰 저장
