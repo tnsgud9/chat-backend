@@ -28,7 +28,7 @@ export class AuthController {
 
     // 계정이 유효한 경우 access token 발급
     const accessToken = await this.authService.createAccessToken({
-      id: id,
+      uid: id,
       nickname: authEntity.nickname,
     });
 
@@ -59,7 +59,7 @@ export class AuthController {
     // 계정이 없는 경우 가입 진행
     // access token 발급
     const accessToken = await this.authService.createAccessToken({
-      id: id,
+      uid: id,
       nickname: nickname,
     });
 

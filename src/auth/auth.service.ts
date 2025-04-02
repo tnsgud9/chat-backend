@@ -5,12 +5,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { Auth } from '../database/schema/auth.schema';
 import { AccessTokenPayload } from '../common/types/jwt.type';
 import { ConfigService } from 'src/config/config.service';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    private databaseService: DatabaseService,
   ) {}
   // dummyUser 데이터로 DB 연동시 제거 예정
   private readonly users: Auth[] = [

@@ -22,10 +22,11 @@ export class AuthAccessTokenStrategy extends PassportStrategy(
         },
       ]),
       secretOrKey: configService.config.SECRET_TOKEN,
-      // passReqToCallback: true,
+      passReqToCallback: true,
     });
   }
-  validate(payload: AccessTokenPayload) {
+  validate(req: Request, payload: AccessTokenPayload) {
+    req.user = payload;
     return payload;
   }
 }
