@@ -1,18 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Permission } from 'src/common/enums/permission.enum';
+import { BaseSchema } from './base.schema';
 
 export type AuthDocument = HydratedDocument<Auth>;
 
 @Schema()
-export class Auth {
-  @Prop()
-  uid: string;
-  @Prop()
+export class Auth extends BaseSchema {
+  @Prop({ required: true, unique: true })
   username: string;
-  @Prop()
+  @Prop({ required: true })
   password: string;
-  @Prop({ type: String, enum: Permission, default: Permission.USER })
+  @Prop({
+    required: true,
+    type: String,
+    enum: Permission,
+    default: Permission.USER,
+  })
   permission: Permission;
   @Prop()
   nickname: string;
