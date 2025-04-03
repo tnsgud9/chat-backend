@@ -13,7 +13,7 @@ export class DatabaseService {
     @Inject(REQUEST) private readonly request: Request,
     @InjectConnection() private readonly connection: Connection,
   ) {
-    this.uid = (this.request.user as AccessTokenPayload).uid;
+    this.uid = (this.request.user as AccessTokenPayload | undefined)?.uid;
   }
   getModel<T>(modelClass: { new (...args: any[]): T }): Model<T> {
     const modelName = modelClass.name; // 타입이 명확해졌기 때문에 오류 없음
