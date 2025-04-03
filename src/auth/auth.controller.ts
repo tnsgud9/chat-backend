@@ -21,15 +21,15 @@ export class AuthController {
     const authEntity = await this.authService.getAccount(id, password);
 
     // 계정이 유효하지 않은 경우
-    if (authEntity === undefined) {
+    if (authEntity === null) {
       // 로그인 실패 응답
-      return res.status(401);
+      return res.status(401).end();
     }
 
     // 계정이 유효한 경우 access token 발급
     const accessToken = await this.authService.createAccessToken({
       uid: id,
-      nickname: authEntity!.nickname,
+      nickname: authEntity.nickname,
     });
 
     // 쿠키에 토큰 저장
