@@ -13,7 +13,7 @@ import { Schemas } from './schema';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.config.DB_URI,
+        uri: configService.config.DB_URI + `/${configService.config.DB_NAME}`,
       }),
     }),
     MongooseModule.forFeature(

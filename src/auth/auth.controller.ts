@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  InternalServerErrorException,
+  Post,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { ApiRoutes } from 'src/common/constants/api-routes';
 import { AuthService } from './auth.service';
@@ -12,67 +20,59 @@ import {
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  // 로그인 API
   @Post(ApiRoutes.Auth.Login)
   async authLogin(
-    @Body() { id, password }: AuthLoginRequestDto,
-    @Res() res: Response,
-  ): Promise<Response> {
-    const authEntity = await this.authService.getAccount(id, password);
+    @Body() authLoginDto: AuthLoginRequestDto,
+  ): Promise<AuthLoginResponseDto> {
+    const { username, password } = authLoginDto;
 
-    // 계정이 유효하지 않은 경우
-    if (authEntity === null) {
-      // 로그인 실패 응답
-      return res.status(401).end();
+    const authEntity = await this.authService.getAccount(username, password);
+    if (!authEntity) {
+      throw new UnauthorizedException('아이디 또는 비밀번호가 잘못되었습니다.');
     }
 
-    // 계정이 유효한 경우 access token 발급
     const accessToken = await this.authService.createAccessToken({
-      uid: id,
+      uid: username,
       nickname: authEntity.nickname,
     });
 
-    // 쿠키에 토큰 저장
-    res.setHeader('Authorization', `Bearer ${accessToken}`);
-    res.cookie('access_token', accessToken, { httpOnly: true });
-    // 로그인 성공 응답
-    return res
-      .status(200) // 상태코드 지정
-      .json({
-        accessToken: accessToken,
-      } as AuthLoginResponseDto);
+    return { accessToken, nickname: authEntity.nickname };
   }
 
   @Post(ApiRoutes.Auth.Signup)
   async authSignup(
-    @Res() res: Response,
-    @Body() { id, password, nickname }: AuthSignupRequestDto,
-  ): Promise<Response> {
-    const authEntity = this.authService.getAccount(id, password);
+    @Body() authSignupDto: AuthSignupRequestDto,
+  ): Promise<AuthSignupResponseDto> {
+    const { username, password, nickname } = authSignupDto;
 
-    // 계정이 존재하는 경우
-    if (authEntity !== undefined) {
-      // 로그인 실패 응답
-      return res.status(401);
+    const existingUser = await this.authService.getAccount(username, password);
+    if (existingUser !== null) {
+      throw new ConflictException('이미 존재하는 아이디입니다.');
     }
 
-    // 계정이 없는 경우 가입 진행
-    // access token 발급
+    const newUser = await this.authService.createAccount(
+      username,
+      password,
+      nickname,
+    );
+    if (!newUser) {
+      throw new InternalServerErrorException('회원가입에 실패했습니다.');
+    }
+
     const accessToken = await this.authService.createAccessToken({
-      uid: id,
-      nickname: nickname,
+      uid: newUser._id,
+      nickname: newUser.nickname,
     });
 
-    return res.status(200).json({
-      accessToken: accessToken,
-      nickname: nickname,
-    } as AuthSignupResponseDto);
+    return { accessToken, nickname: newUser.nickname };
   }
 
+  // 로그아웃 API
   @Post(ApiRoutes.Auth.Logout)
   authLogout(@Res() res: Response) {
-    // 쿠키 토큰 삭제
+    // 쿠키에 저장된 access_token 삭제
     res.clearCookie('access_token');
-    return res.status(200);
+    return res.status(200).json({ message: '로그아웃 되었습니다.' });
   }
 }

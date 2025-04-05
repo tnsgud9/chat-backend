@@ -8,7 +8,7 @@ import {
 
 export class AuthLoginRequestDto {
   @IsEmail()
-  id: string;
+  username: string;
 
   @IsString()
   @Length(8, 256)
@@ -28,7 +28,7 @@ export class AuthLoginResponseDto {
 
 export class AuthSignupRequestDto {
   @IsEmail()
-  id: string;
+  username: string;
 
   @IsString()
   @Length(8, 256)

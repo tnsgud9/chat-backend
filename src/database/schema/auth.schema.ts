@@ -1,15 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Permission } from 'src/common/enums/permission.enum';
-import { BaseSchema } from './base.schema';
+import { v4 as uuidv4 } from 'uuid';
 
 // 'Auth' 모델의 문서 타입을 정의
-// HydratedDocument는 Mongoose에서 MongoDB에서 로드된 후의 문서를 나타낸다.
 export type AuthDocument = HydratedDocument<Auth>;
 
 // Auth 스키마 정의
-@Schema()
-export class Auth extends BaseSchema {
+@Schema({ timestamps: true, versionKey: false })
+export class Auth {
+  @Prop({ default: uuidv4 }) // UUIDv4를 기본값으로 설정 (unique 속성 제거)
+  _id: string;
+
   // 필수, 고유한 사용자명
   @Prop({ required: true, unique: true })
   username: string;
@@ -33,5 +35,12 @@ export class Auth extends BaseSchema {
 }
 
 // Auth 클래스를 바탕으로 Mongoose 스키마를 생성
-// 'SchemaFactory.createForClass(Auth)'는 'Auth' 클래스를 Mongoose에서 사용할 수 있는 스키마 객체로 변환
 export const AuthSchema = SchemaFactory.createForClass(Auth);
+
+// save 시에 uid가 없으면 UUIDv4를 자동으로 생성하여 할당하는 pre save 훅
+AuthSchema.pre('save', function (next) {
+  if (!this._id) {
+    this._id = uuidv4(); // uid가 없으면 UUIDv4를 생성하여 할당
+  }
+  next();
+});

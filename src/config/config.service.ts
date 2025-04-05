@@ -13,6 +13,7 @@ export class ConfigService {
         'SECRET_TOKEN',
         'secretsecretsecret',
       ),
+      DB_NAME: this.configService.get('DB_NAME', 'DB'),
     } as Configuration;
   }
 }
