@@ -1,9 +1,10 @@
-import { Injectable, Scope, Inject, Global } from '@nestjs/common';
+import { Injectable, Scope, Inject } from '@nestjs/common';
 import { Connection, Model } from 'mongoose';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { AccessTokenPayload } from 'src/common/types/jwt.type';
 import { InjectConnection } from '@nestjs/mongoose';
+import { Schemas } from './schema/schema';
 
 @Injectable({ scope: Scope.REQUEST })
 export class DatabaseService {
@@ -15,12 +16,16 @@ export class DatabaseService {
   ) {
     this.uid = (this.request.user as AccessTokenPayload | undefined)?.uid;
   }
-  getModel<T>(modelClass: { new (...args: any[]): T }): Model<T> {
-    const modelName = modelClass.name; // 타입이 명확해졌기 때문에 오류 없음
-    return this.connection.model<T>(modelName);
+  // getModel<T>(modelClass: { new (...args: any[]): T }): Model<T> {
+  //   const modelName = modelClass.name; // 타입이 명확해졌기 때문에 오류 없음
+  //   return this.connection.model<T>(modelName);
+  // }
+
+  getModel<T>(schema: (typeof Schemas)[keyof typeof Schemas]): Model<T> {
+    return this.connection.model<T>(schema.name);
   }
 
-  async firstOrDefaultWithUserUid<T>(
+  async firstOrDefaultWithUid<T>(
     model: Model<T>,
     uid: string | undefined = undefined,
   ): Promise<T | null> {

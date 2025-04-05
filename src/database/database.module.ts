@@ -3,9 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
 import { DatabaseService } from './database.service';
-import { AuthSchema, Auth } from './schema/auth.schema';
-
-const schemas = [{ name: Auth.name, schema: AuthSchema }];
+import { Schemas } from './schema/schema';
 
 @Global()
 @Module({
@@ -18,7 +16,9 @@ const schemas = [{ name: Auth.name, schema: AuthSchema }];
         uri: configService.config.DB_URI,
       }),
     }),
-    MongooseModule.forFeature(schemas),
+    MongooseModule.forFeature(
+      Object.values(Schemas).map(({ name, schema }) => ({ name, schema })),
+    ),
   ],
   providers: [DatabaseService],
   exports: [MongooseModule, DatabaseService],

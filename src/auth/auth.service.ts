@@ -6,6 +6,7 @@ import { Auth, AuthDocument, AuthSchema } from '../database/schema/auth.schema';
 import { AccessTokenPayload } from '../common/types/jwt.type';
 import { ConfigService } from 'src/config/config.service';
 import { DatabaseService } from 'src/database/database.service';
+import { Schemas } from 'src/database/schema/schema';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,9 @@ export class AuthService {
     username: string,
     password: string,
   ): Promise<AuthDocument | null> {
-    const authEntity = this.databaseService.getModel(Auth);
+    const authEntity = this.databaseService.getModel<AuthDocument>(
+      Schemas.Auth,
+    );
     return await authEntity.findOne({ username, password }).exec();
   }
 
