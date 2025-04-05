@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
 import { DatabaseService } from './database.service';
-import { Schemas } from './schema/schema';
+import { Schemas } from './schema';
 
 @Global()
 @Module({

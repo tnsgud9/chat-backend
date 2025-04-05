@@ -6,7 +6,7 @@ import { Auth, AuthDocument, AuthSchema } from '../database/schema/auth.schema';
 import { AccessTokenPayload } from '../common/types/jwt.type';
 import { ConfigService } from 'src/config/config.service';
 import { DatabaseService } from 'src/database/database.service';
-import { Schemas } from 'src/database/schema/schema';
+import { Schemas } from 'src/database/schema';
 
 @Injectable()
 export class AuthService {
