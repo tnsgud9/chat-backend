@@ -24,6 +24,7 @@ export class AuthController {
   @Post(ApiRoutes.Auth.Login)
   async authLogin(
     @Body() authLoginDto: AuthLoginRequestDto,
+    @Res({ passthrough: true }) res: Response, // passthrough는 NestJS의 자동 응답 처리를 유지하면서 Response 객체를 사용할 수 있도록 해주는 기능
   ): Promise<AuthLoginResponseDto> {
     const { username, password } = authLoginDto;
 
@@ -37,12 +38,19 @@ export class AuthController {
       nickname: authEntity.nickname,
     });
 
+    res.cookie('access_token', accessToken, {
+      httpOnly: true, // XSS 공격 방지
+      secure: true, // HTTPS 환경에서만 전송 (개발 환경에서는 false 가능)
+      sameSite: 'strict', // CSRF 방지
+    });
+
     return { accessToken, nickname: authEntity.nickname };
   }
 
   @Post(ApiRoutes.Auth.Signup)
   async authSignup(
     @Body() authSignupDto: AuthSignupRequestDto,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<AuthSignupResponseDto> {
     const { username, password, nickname } = authSignupDto;
 
@@ -65,12 +73,18 @@ export class AuthController {
       nickname: newUser.nickname,
     });
 
+    res.cookie('access_token', accessToken, {
+      httpOnly: true, // XSS 공격 방지
+      secure: true, // HTTPS 환경에서만 전송 (개발 환경에서는 false 가능)
+      sameSite: 'strict', // CSRF 방지
+    });
+
     return { accessToken, nickname: newUser.nickname };
   }
 
   // 로그아웃 API
   @Post(ApiRoutes.Auth.Logout)
-  authLogout(@Res() res: Response) {
+  authLogout(@Res({ passthrough: true }) res: Response) {
     // 쿠키에 저장된 access_token 삭제
     res.clearCookie('access_token');
     return res.status(200).json({ message: '로그아웃 되었습니다.' });

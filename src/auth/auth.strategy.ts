@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AccessTokenPayload } from '../common/types/jwt.type';
-import { ConfigService } from 'src/config/config.service';
+import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 
 @Injectable()
@@ -11,22 +11,20 @@ export class AuthAccessTokenStrategy extends PassportStrategy(
   'access_token',
 ) {
   constructor(configService: ConfigService) {
+    const secretKey = configService.get<string>('SECRET_TOKEN', {
+      infer: true,
+    })!;
+
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request): string | null => {
-          if (!req || !req.cookies) {
-            return null;
-          }
-          const token: unknown = req.cookies.access_token;
-          return typeof token === 'string' ? token : null;
-        },
+        (req: Request): string | null => req?.cookies?.access_token as string,
       ]),
-      secretOrKey: configService.config.SECRET_TOKEN,
-      passReqToCallback: true,
+      secretOrKey: secretKey,
+      passReqToCallback: false, // `validate`에서 `req`를 사용하지 않으므로 false 설정
     });
   }
-  validate(req: Request, payload: AccessTokenPayload) {
-    req.user = payload;
-    return payload;
+
+  validate(payload: AccessTokenPayload): AccessTokenPayload {
+    return payload; // Passport가 자동으로 req.user에 할당함
   }
 }
