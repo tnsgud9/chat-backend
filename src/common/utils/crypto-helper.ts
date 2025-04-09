@@ -3,17 +3,22 @@ export const generateRSAKeyPair = (): {
   publicKey: string;
   privateKey: string;
 } => {
-  return crypto.generateKeyPairSync('rsa', {
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 2048, // 2048비트 길이의 키
     publicKeyEncoding: {
       type: 'spki', // 공개키 인코딩 형식
-      format: 'pem', // PEM 형식
+      format: 'der', // DER 형식
     },
     privateKeyEncoding: {
       type: 'pkcs8', // 개인키 인코딩 형식
-      format: 'pem', // PEM 형식
+      format: 'der', // DER 형식
     },
   });
+
+  return {
+    publicKey: publicKey.toString('base64'), // DER 형식의 데이터를 Base64로 인코딩해서 반환
+    privateKey: privateKey.toString('base64'), // DER 형식의 데이터를 Base64로 인코딩해서 반환
+  };
 };
 
 // RSA 암호화

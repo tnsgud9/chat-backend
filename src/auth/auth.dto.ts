@@ -24,6 +24,9 @@ export class AuthLoginResponseDto {
   nickname: string;
 
   accessToken: string;
+
+  publicKey: string;
+  encryptedPrivateKey: string;
 }
 
 export class AuthSignupRequestDto {

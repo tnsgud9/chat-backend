@@ -32,6 +32,7 @@ export class AuthController {
     if (!authEntity) {
       throw new UnauthorizedException('아이디 또는 비밀번호가 잘못되었습니다.');
     }
+    const { nickname, publicKey, encryptedPrivateKey } = authEntity;
 
     const accessToken = await this.authService.createAccessToken({
       uid: username,
@@ -44,7 +45,7 @@ export class AuthController {
       sameSite: 'strict', // CSRF 방지
     });
 
-    return { accessToken, nickname: authEntity.nickname };
+    return { accessToken, nickname, publicKey, encryptedPrivateKey };
   }
 
   @Post(ApiRoutes.Auth.Signup)
