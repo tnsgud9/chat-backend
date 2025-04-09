@@ -14,6 +14,8 @@ import { Schemas } from './schema';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.config.DB_URI + `/${configService.config.DB_NAME}`,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
       }),
     }),
     MongooseModule.forFeature(

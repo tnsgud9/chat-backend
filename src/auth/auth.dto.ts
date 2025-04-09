@@ -50,4 +50,8 @@ export class AuthSignupResponseDto {
   nickname: string;
 
   accessToken: string;
+
+  encryptedPrivateKey: string;
+
+  publicKey: string;
 }

@@ -32,6 +32,12 @@ export class Auth {
   // 닉네임
   @Prop({ required: true })
   nickname: string;
+
+  @Prop({ required: true })
+  publicKey: string;
+
+  @Prop({ required: true })
+  encryptedPrivateKey: string;
 }
 
 // Auth 클래스를 바탕으로 Mongoose 스키마를 생성

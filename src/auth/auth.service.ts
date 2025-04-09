@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt'; // bcrypt import 추가
 import { Schemas } from 'src/database/schema';
+import { encryptAES, generateRSAKeyPair } from 'src/common/utils/crypto-helper';
 
 @Injectable()
 export class AuthService {
@@ -55,11 +56,19 @@ export class AuthService {
     // 비밀번호 해시 생성
     const hashedPassword = await bcrypt.hash(password, 10); // bcrypt로 비밀번호 해시화
 
+    // 공개키 개인키 생성
+    const { publicKey, privateKey } = generateRSAKeyPair();
+
+    // 개인키를 대칭키로 암호화
+    const encryptedPrivateKey = encryptAES(password, privateKey);
+
     // 새 사용자 객체 생성
     const newUser = new this.authModel({
       username,
       password: hashedPassword,
       nickname,
+      publicKey,
+      encryptedPrivateKey,
     });
 
     // 데이터베이스에 저장

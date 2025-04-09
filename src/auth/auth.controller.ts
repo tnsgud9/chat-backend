@@ -79,7 +79,12 @@ export class AuthController {
       sameSite: 'strict', // CSRF 방지
     });
 
-    return { accessToken, nickname: newUser.nickname };
+    return {
+      accessToken,
+      nickname: newUser.nickname,
+      encryptedPrivateKey: newUser.encryptedPrivateKey,
+      publicKey: newUser.publicKey,
+    };
   }
 
   // 로그아웃 API
