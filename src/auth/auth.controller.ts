@@ -35,7 +35,7 @@ export class AuthController {
     const { nickname, publicKey, encryptedPrivateKey } = authEntity;
 
     const accessToken = await this.authService.createAccessToken({
-      uid: username,
+      id: authEntity.id,
       nickname: authEntity.nickname,
     });
 
@@ -45,7 +45,13 @@ export class AuthController {
       sameSite: 'strict', // CSRF 방지
     });
 
-    return { accessToken, nickname, publicKey, encryptedPrivateKey };
+    return {
+      accessToken,
+      nickname,
+      publicKey,
+      encryptedPrivateKey,
+      id: authEntity.id,
+    };
   }
 
   @Post(ApiRoutes.Auth.Signup)
@@ -70,7 +76,7 @@ export class AuthController {
     }
 
     const accessToken = await this.authService.createAccessToken({
-      uid: newUser._id,
+      id: newUser.id,
       nickname: newUser.nickname,
     });
 

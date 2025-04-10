@@ -21,7 +21,7 @@ export class DatabaseService {
     model: Model<T>,
     uid?: string,
   ): Promise<T | null> {
-    const userId = uid || (this.request.user as AccessTokenPayload)?.uid;
+    const userId = uid || (this.request.user as AccessTokenPayload)?.id;
     return model.findOne({ uid: userId });
   }
 }

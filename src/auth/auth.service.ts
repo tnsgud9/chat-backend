@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Auth, AuthDocument } from '../database/schema/auth.schema';
 import { AccessTokenPayload } from '../common/types/jwt.type';
 import { ConfigService } from 'src/config/config.service';
-import { DatabaseService } from 'src/database/database.service';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt'; // bcrypt import 추가
@@ -15,7 +14,6 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
-    private databaseService: DatabaseService,
     @InjectModel(Schemas.Auth.name) private readonly authModel: Model<Auth>,
   ) {}
 
@@ -46,7 +44,7 @@ export class AuthService {
     username: string, // 아이디 (username)
     password: string, // 비밀번호
     nickname: string, // 닉네임
-  ): Promise<Auth | null> {
+  ): Promise<AuthDocument | null> {
     // 아이디 중복 검사
     const existingUser = await this.authModel.findOne({ username }).exec();
     if (existingUser) {

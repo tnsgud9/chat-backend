@@ -23,9 +23,16 @@ export class AuthLoginResponseDto {
   @Matches(/^[a-zA-Z0-9_]+$/)
   nickname: string;
 
+  @IsString()
   accessToken: string;
 
+  @IsString()
+  id: string;
+
+  @IsString()
   publicKey: string;
+
+  @IsString()
   encryptedPrivateKey: string;
 }
 
