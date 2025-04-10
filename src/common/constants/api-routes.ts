@@ -6,7 +6,8 @@ export const ApiRoutes = {
     Logout: 'auth/logout',
   },
   User: {
-    Profile: 'user/profile',
+    Search: 'user/search',
+    Channels: 'user/channels',
     Friends: 'user/friends',
   },
 } as const;
