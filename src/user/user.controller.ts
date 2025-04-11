@@ -1,24 +1,24 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiRoutes } from 'src/common/constants/api-routes';
 import { UserSearchQueryReqeustDto, UserSearchResponseDto } from './user.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Auth } from 'src/database/schema/auth.schema';
-import { Schemas } from 'src/database/schema';
-import { Model } from 'mongoose';
+import { DatabaseService } from 'src/database/database.service';
 
 @Controller()
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    @InjectModel(Schemas.Auth.name) private readonly authModel: Model<Auth>,
+    private readonly databaseService: DatabaseService,
   ) {}
 
   @Get(ApiRoutes.User.Search)
   async userSearch(
-    @Query() { id }: UserSearchQueryReqeustDto,
+    @Query() { nickname }: UserSearchQueryReqeustDto,
   ): Promise<UserSearchResponseDto> {
-    const user = await this.authModel.findOne({ _id: id }).exec();
-    return { id: user?.id };
+    const user = await this.userService.getAccountInfo(nickname);
+    if (!user) {
+      throw new NotFoundException('존재하는 않거나 없는 계정입니다.');
+    }
+    return { id: user.id, nickname: user.nickname, publicKey: user.publicKey };
   }
 }

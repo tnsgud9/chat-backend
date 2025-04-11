@@ -29,9 +29,11 @@ export class Auth {
   @Prop({ required: true })
   nickname: string;
 
+  // 공개키
   @Prop({ required: true })
   publicKey: string;
 
+  // 암호화된 비공개키
   @Prop({ required: true })
   encryptedPrivateKey: string;
 }

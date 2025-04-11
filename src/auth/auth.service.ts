@@ -5,7 +5,7 @@ import { AccessTokenPayload } from '../common/types/jwt.type';
 import { ConfigService } from 'src/config/config.service';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt'; // bcrypt import 추가
+import * as bcrypt from 'bcrypt';
 import { Schemas } from 'src/database/schema';
 import { encryptAES, generateRSAKeyPair } from 'src/common/utils/crypto-helper';
 
