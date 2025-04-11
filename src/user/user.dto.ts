@@ -7,7 +7,6 @@ export class UserSearchQueryReqeustDto {
 export class UserSearchResponseDto {
   id: string;
   nickname: string;
-  publicKey: string;
 }
 
 export class UserChannelsResponseDto {

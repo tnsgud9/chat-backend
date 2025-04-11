@@ -28,12 +28,6 @@ export class AuthLoginResponseDto {
 
   @IsString()
   id: string;
-
-  @IsString()
-  publicKey: string;
-
-  @IsString()
-  encryptedPrivateKey: string;
 }
 
 export class AuthSignupRequestDto {
@@ -60,8 +54,4 @@ export class AuthSignupResponseDto {
   nickname: string;
 
   accessToken: string;
-
-  encryptedPrivateKey: string;
-
-  publicKey: string;
 }
