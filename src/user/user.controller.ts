@@ -29,6 +29,6 @@ export class UserController {
     if (!user || user.id == id) {
       throw new NotFoundException('존재하는 않거나 없는 계정입니다.');
     }
-    return { id: user.id, nickname: user.nickname };
+    return { id: user.id, nickname: user.nickname, publicKey: user.publicKey };
   }
 }

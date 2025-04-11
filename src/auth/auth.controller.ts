@@ -32,11 +32,11 @@ export class AuthController {
     if (!authEntity) {
       throw new UnauthorizedException('아이디 또는 비밀번호가 잘못되었습니다.');
     }
-    const { nickname, id } = authEntity;
+    const { nickname, publicKey, encryptedPrivateKey } = authEntity;
 
     const accessToken = await this.authService.createAccessToken({
-      id,
-      nickname,
+      id: authEntity.id,
+      nickname: authEntity.nickname,
     });
 
     res.cookie('access_token', accessToken, {
@@ -46,9 +46,11 @@ export class AuthController {
     });
 
     return {
-      id,
       accessToken,
       nickname,
+      publicKey,
+      encryptedPrivateKey,
+      id: authEntity.id,
     };
   }
 
@@ -87,6 +89,8 @@ export class AuthController {
     return {
       accessToken,
       nickname: newUser.nickname,
+      encryptedPrivateKey: newUser.encryptedPrivateKey,
+      publicKey: newUser.publicKey,
     };
   }
 
