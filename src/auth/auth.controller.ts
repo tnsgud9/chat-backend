@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Get,
   InternalServerErrorException,
   Post,
   Res,
@@ -95,7 +96,7 @@ export class AuthController {
   }
 
   // 로그아웃 API
-  @Post(ApiRoutes.Auth.Logout)
+  @Get(ApiRoutes.Auth.Logout)
   authLogout(@Res({ passthrough: true }) res: Response) {
     // 쿠키에 저장된 access_token 삭제
     res.clearCookie('access_token');
