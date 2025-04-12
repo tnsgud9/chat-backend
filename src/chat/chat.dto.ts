@@ -10,7 +10,7 @@ export class ChatRoomCreateRequestDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsMongoId({ each: true })
-  participantId: ObjectId[];
+  participantIds: ObjectId[];
 }
 
 export class ChatRoomCreateResponseDto {
