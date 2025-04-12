@@ -12,8 +12,8 @@ export const ApiRoutes = {
   },
   Chat: {
     ChatRooms: 'chat/rooms', // GET: 채팅방 목록 조회
-    CreateChatRoom: 'chat/rooms/create', // POST: 채팅방 생성
+    ChatRoomCreate: 'chat/rooms/create', // POST: 채팅방 생성
     ChatRoomInfo: 'chat/rooms/{roomId}', // GET: 채팅방 상세 조회
-    LeaveChatRoom: 'chat/rooms/{roomId}/leave', // DELETE: 채팅방 나가기
+    ChatRoomLeave: 'chat/rooms/{roomId}/leave', // DELETE: 채팅방 나가기
   },
 } as const;

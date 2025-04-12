@@ -6,14 +6,14 @@ export class ChatRoomsResponseDto {
   chatrooms: ChatRoomDto[];
 }
 
-export class CreateChatRoomRequestDto {
+export class ChatRoomCreateRequestDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsMongoId({ each: true })
   participantId: ObjectId[];
 }
 
-export class CreateChatRoomResponseDto {
+export class ChatRoomCreateResponseDto {
   @IsMongoId()
   id: ObjectId;
 
