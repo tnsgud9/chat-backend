@@ -13,7 +13,7 @@ export class User {
   friendRequests: ObjectId[];
 
   @Prop({ type: [String], default: [] }) // 채팅방 리스트
-  channels: ObjectId[];
+  chatrooms: ObjectId[];
 }
 
 // User 클래스를 바탕으로 Mongoose 스키마를 생성

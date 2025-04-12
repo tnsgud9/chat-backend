@@ -15,8 +15,8 @@ export class UserService {
     return user;
   }
 
-  public async getChannels(nickname: string) {
-    const user = await this.authModel.findOne({ nickname }).exec();
-    return user;
-  }
+  // public async getChatRooms(nickname: string) {
+  //   const user = await this.authModel.findOne({ nickname }).exec();
+  //   return user;
+  // }
 }

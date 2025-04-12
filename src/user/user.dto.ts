@@ -1,4 +1,3 @@
-import { ChannelDto } from 'src/common/dto/channel.dto';
 import { IsString } from 'class-validator';
 
 export class UserSearchQueryRequestDto {
@@ -10,8 +9,4 @@ export class UserSearchResponseDto {
   id: string;
   nickname: string;
   publicKey: string;
-}
-
-export class UserChannelsResponseDto {
-  channels: ChannelDto[];
 }
