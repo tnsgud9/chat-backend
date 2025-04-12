@@ -1,10 +1,12 @@
 import {
   IsEmail,
+  IsMongoId,
   IsNotEmpty,
   IsString,
   Length,
   Matches,
 } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class AuthLoginRequestDto {
   @IsEmail()
@@ -26,8 +28,8 @@ export class AuthLoginResponseDto {
   @IsString()
   accessToken: string;
 
-  @IsString()
-  id: string;
+  @IsMongoId()
+  id: ObjectId;
 
   @IsString()
   publicKey: string;
