@@ -50,16 +50,16 @@ export class ChatController {
     // 2. 채팅방을 위한 공개키, 개인키를 생성한다.
     // 3. auth 유저들의 공개키를 기반으로 개인키를 암호화한다.
     // 4. DB에 저장한다.
-    const { id, name, publicKey, encryptedPrivateKey } =
+    const { id, name, publicKey, encryptedPrivateKeys } =
       await this.chatService.createChatRoom(users);
     // 생성된 document 가공하여 반환
     return {
       id,
       name,
       publicKey,
-      encryptedPrivateKey: encryptedPrivateKey.get(
-        new Types.ObjectId(authInfo.id),
-      )!,
+      encryptedPrivateKey: encryptedPrivateKeys.find(
+        (it) => it.userId == new Types.ObjectId(authInfo.id),
+      )!.encryptedKey,
     };
   }
 }

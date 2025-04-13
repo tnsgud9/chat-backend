@@ -4,7 +4,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Schemas } from 'src/database/schema';
 import { Auth, AuthDocument } from 'src/database/schema/auth.schema';
-import { ChatRoom } from 'src/database/schema/chatroom.schema';
+import {
+  ChatRoom,
+  ChatRoomDocument,
+  EncryptedKeyRecord,
+} from 'src/database/schema/chatroom.schema';
 import {
   generateRSAKeyPair,
   hybridEncrypt,
@@ -23,21 +27,25 @@ export class ChatService {
     return await this.authModel.find({ _id: { $in: ids } }).exec();
   }
 
-  public async createChatRoom(users: AuthDocument[]) {
+  public async createChatRoom(
+    users: AuthDocument[],
+  ): Promise<ChatRoomDocument> {
     // 2. 채팅방을 위한 공개키, 개인키를 생성한다.
     const { publicKey, privateKey } = generateRSAKeyPair();
 
     // 3. auth 유저들의 공개키를 기반으로 개인키를 암호화한다.
-    const encryptedPrivateKey: Map<ObjectId, string> = Object.fromEntries(
-      users.map((it) => [
-        it.id,
-        hybridEncrypt(it.publicKey, privateKey.toString()),
-      ]),
+    // 2. 각 유저의 공개키로 개인키를 암호화하고 배열 형태로 저장
+    const encryptedPrivateKeys = users.map(
+      (user): EncryptedKeyRecord => ({
+        userId: user.id,
+        encryptedKey: hybridEncrypt(user.publicKey, privateKey.toString()),
+      }),
     );
+
     const chatroom = new this.chatroomModel({
       name: users.map((it) => it.nickname).join(', '),
       publicKey,
-      encryptedPrivateKey,
+      encryptedPrivateKeys,
     });
 
     await chatroom.save();
