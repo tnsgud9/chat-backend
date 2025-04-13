@@ -18,6 +18,7 @@ import { AuthAccessTokenGuard } from '../auth/auth.guard';
 import { AuthInfo } from '../auth/auth.decorator';
 import { AccessTokenPayload } from '../common/types/jwt.type';
 import { Types } from 'mongoose';
+import { ChatRoomDto } from '../common/dto/chatroom.dto';
 
 @Controller()
 export class ChatController {
@@ -25,8 +26,13 @@ export class ChatController {
 
   @UseGuards(AuthAccessTokenGuard)
   @Get(ApiRoutes.Chat.ChatRooms)
-  async chatRooms(): Promise<ChatRoomsResponseDto> {
-    return { chatrooms: [] };
+  async chatRooms(
+    @AuthInfo() { id }: AccessTokenPayload,
+  ): Promise<ChatRoomsResponseDto> {
+    const chatrooms = await this.chatService.getChatRooms(
+      new Types.ObjectId(id),
+    );
+    return { chatrooms: chatrooms.map((it) => new ChatRoomDto(it)) };
   }
 
   @UseGuards(AuthAccessTokenGuard)

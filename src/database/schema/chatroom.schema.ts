@@ -4,9 +4,10 @@ import { IsMongoId } from 'class-validator';
 
 export type ChatRoomDocument = HydratedDocument<ChatRoom>;
 
+@Schema({ _id: false }) // ✅ 서브스키마로 선언
 export class EncryptedKeyRecord {
   @IsMongoId()
-  @Prop({ required: true })
+  @Prop({ type: Types.ObjectId, required: true })
   userId: Types.ObjectId;
 
   @Prop({ required: true })

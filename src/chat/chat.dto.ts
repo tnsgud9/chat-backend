@@ -1,5 +1,5 @@
 import { ArrayNotEmpty, IsArray, IsMongoId, IsString } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import { ChatRoomDto } from 'src/common/dto/chatroom.dto';
 
 export class ChatRoomsResponseDto {
@@ -10,12 +10,12 @@ export class ChatRoomCreateRequestDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsMongoId({ each: true })
-  participantIds: ObjectId[];
+  participantIds: Types.ObjectId[];
 }
 
 export class ChatRoomCreateResponseDto {
   @IsMongoId()
-  id: ObjectId;
+  id: Types.ObjectId;
 
   @IsString()
   name: string;

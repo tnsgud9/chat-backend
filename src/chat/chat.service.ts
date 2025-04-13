@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Schemas } from 'src/database/schema';
 import { Auth, AuthDocument } from 'src/database/schema/auth.schema';
 import {
@@ -23,8 +23,20 @@ export class ChatService {
     @InjectModel(Schemas.Auth.name) private readonly authModel: Model<Auth>,
   ) {}
 
-  public async getAccounts(ids: ObjectId[]) {
+  public async getAccounts(ids: Types.ObjectId[]) {
     return await this.authModel.find({ _id: { $in: ids } }).exec();
+  }
+
+  public async getChatRooms(id: Types.ObjectId) {
+    return await this.chatroomModel
+      .find({
+        encryptedPrivateKeys: {
+          $elemMatch: {
+            userId: id.toString(),
+          },
+        },
+      })
+      .exec();
   }
 
   public async createChatRoom(
