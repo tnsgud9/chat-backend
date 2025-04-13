@@ -22,6 +22,6 @@ export class DatabaseService {
     uid?: string,
   ): Promise<T | null> {
     const userId = uid || (this.request.user as AccessTokenPayload)?.id;
-    return await model.findById(userId);
+    return model.findById(userId);
   }
 }
