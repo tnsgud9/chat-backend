@@ -18,6 +18,9 @@ export class ChatRoomCreateResponseDto {
   id: ObjectId;
 
   @IsString()
+  name: string;
+
+  @IsString()
   publicKey: string;
 
   @IsString()
