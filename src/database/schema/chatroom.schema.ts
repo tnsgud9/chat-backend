@@ -4,8 +4,8 @@ import { IsMongoId } from 'class-validator';
 
 export type ChatRoomDocument = HydratedDocument<ChatRoom>;
 
-@Schema({ _id: false }) // ✅ 서브스키마로 선언
-export class EncryptedKeyRecord {
+@Schema({ _id: false })
+export class EncryptedPrivateKey {
   @IsMongoId()
   @Prop({ type: Types.ObjectId, required: true })
   userId: Types.ObjectId;
@@ -22,8 +22,8 @@ export class ChatRoom {
   @Prop({ required: true })
   publicKey: string;
 
-  @Prop({ type: [EncryptedKeyRecord] })
-  encryptedPrivateKeys: EncryptedKeyRecord[];
+  @Prop({ type: [EncryptedPrivateKey] })
+  encryptedPrivateKeys: EncryptedPrivateKey[];
 }
 
 export const ChatRoomSchema = SchemaFactory.createForClass(ChatRoom);

@@ -7,7 +7,7 @@ import { Auth, AuthDocument } from 'src/database/schema/auth.schema';
 import {
   ChatRoom,
   ChatRoomDocument,
-  EncryptedKeyRecord,
+  EncryptedPrivateKey,
 } from 'src/database/schema/chatroom.schema';
 import {
   generateRSAKeyPair,
@@ -48,8 +48,8 @@ export class ChatService {
     // 3. auth 유저들의 공개키를 기반으로 개인키를 암호화한다.
     // 2. 각 유저의 공개키로 개인키를 암호화하고 배열 형태로 저장
     const encryptedPrivateKeys = users.map(
-      (user): EncryptedKeyRecord => ({
-        userId: user.id,
+      (user): EncryptedPrivateKey => ({
+        userId: user.id as Types.ObjectId,
         encryptedKey: hybridEncrypt(user.publicKey, privateKey.toString()),
       }),
     );
