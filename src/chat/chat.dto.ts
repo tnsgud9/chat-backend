@@ -1,6 +1,7 @@
 import { ArrayNotEmpty, IsArray, IsMongoId, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 import { ChatRoomDto } from 'src/common/dto/chatroom.dto';
+import { MessageDto } from 'src/common/dto/message.dto';
 
 export class ChatRoomsResponseDto {
   chatrooms: ChatRoomDto[];
@@ -27,4 +28,9 @@ export class ChatRoomCreateResponseDto {
   encryptedPrivateKey: string;
 }
 
-export class ChatRoomInfoResponseDto {}
+export class ChatRoomInfoResponseDto {
+  @IsMongoId()
+  roomId: Types.ObjectId;
+
+  messages: MessageDto[];
+}

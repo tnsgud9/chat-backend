@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -36,9 +37,12 @@ export class ChatController {
   }
 
   @UseGuards(AuthAccessTokenGuard)
-  @Get(ApiRoutes.Chat.ChatRoomInfo)
-  async chatRoomInfo(): Promise<ChatRoomInfoResponseDto> {
-    return { chatrooms: [] };
+  @Get(ApiRoutes.Chat.ChatRoomInfo('roomId'))
+  async chatRoomInfo(
+    @Param('roomId') roomId: Types.ObjectId,
+  ): Promise<ChatRoomInfoResponseDto> {
+    const messages = await this.chatService.getMessages(roomId);
+    return { roomId, messages: messages };
   }
 
   @UseGuards(AuthAccessTokenGuard)

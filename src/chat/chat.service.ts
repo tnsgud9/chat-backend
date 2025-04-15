@@ -13,6 +13,7 @@ import {
   generateRSAKeyPair,
   hybridEncrypt,
 } from '../common/utils/crypto-helper';
+import { Message } from 'src/database/schema/message.schema';
 
 @Injectable()
 export class ChatService {
@@ -21,10 +22,16 @@ export class ChatService {
     @InjectModel(Schemas.ChatRoom.name)
     private readonly chatroomModel: Model<ChatRoom>,
     @InjectModel(Schemas.Auth.name) private readonly authModel: Model<Auth>,
+    @InjectModel(Schemas.Message.name)
+    private readonly messageModel: Model<Message>,
   ) {}
 
   public async getAccounts(ids: Types.ObjectId[]) {
     return await this.authModel.find({ _id: { $in: ids } }).exec();
+  }
+
+  public async getMessages(id: Types.ObjectId) {
+    return await this.messageModel.find({ chatRoomId: id }).exec();
   }
 
   public async getChatRooms(id: Types.ObjectId) {
