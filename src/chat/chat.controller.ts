@@ -39,8 +39,9 @@ export class ChatController {
   @UseGuards(AuthAccessTokenGuard)
   @Get(ApiRoutes.Chat.ChatRoomInfo('roomId'))
   async chatRoomInfo(
-    @Param('roomId') roomId: Types.ObjectId,
+    @Param('roomId') _roomId: string,
   ): Promise<ChatRoomInfoResponseDto> {
+    const roomId = new Types.ObjectId(_roomId);
     const messages = await this.chatService.getMessages(roomId);
     return { roomId, messages: messages };
   }
