@@ -14,6 +14,7 @@ import {
   hybridEncrypt,
 } from '../common/utils/crypto-helper';
 import { Message } from 'src/database/schema/message.schema';
+import { ContentType } from 'src/common/enums/content.enum';
 
 @Injectable()
 export class ChatService {
@@ -31,7 +32,10 @@ export class ChatService {
   }
 
   public async getMessages(id: Types.ObjectId) {
-    return await this.messageModel.find({ chatRoomId: id }).exec();
+    return await this.messageModel
+      .find({ chatRoomId: id })
+      .sort({ _id: 1 })
+      .exec();
   }
 
   public async getChatRooms(id: Types.ObjectId) {
@@ -69,5 +73,19 @@ export class ChatService {
 
     await chatroom.save();
     return chatroom;
+  }
+
+  public async createMessage(
+    id: Types.ObjectId,
+    chatRoomId: Types.ObjectId,
+    content: string,
+    contentType: ContentType = ContentType.MESSAGE,
+  ) {
+    return await this.messageModel.insertOne({
+      chatRoomId,
+      content,
+      sender: id,
+      contentType,
+    });
   }
 }

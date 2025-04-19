@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { ContentType } from 'src/common/enums/content.enum';
 
 export type MessageDocument = HydratedDocument<Message>;
 
@@ -10,6 +11,14 @@ export class Message {
 
   @Prop({ type: Types.ObjectId, required: true })
   sender: Types.ObjectId;
+
+  @Prop({
+    required: true,
+    type: String,
+    enum: ContentType,
+    default: ContentType.MESSAGE,
+  })
+  contentType: ContentType;
 
   @Prop({ required: true })
   content: string;

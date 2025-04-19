@@ -20,6 +20,8 @@ import { AuthInfo } from '../auth/auth.decorator';
 import { AccessTokenPayload } from '../common/types/jwt.type';
 import { Types } from 'mongoose';
 import { ChatRoomDto } from '../common/dto/chatroom.dto';
+import { MessageDto } from 'src/common/dto/message.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller()
 export class ChatController {
@@ -42,7 +44,14 @@ export class ChatController {
     @Param('roomId') _roomId: string,
   ): Promise<ChatRoomInfoResponseDto> {
     const roomId = new Types.ObjectId(_roomId);
-    const messages = await this.chatService.getMessages(roomId);
+    // const messages = await this.chatService.getMessages(roomId);
+    const messages = plainToInstance(
+      MessageDto,
+      await this.chatService.getMessages(roomId),
+      {
+        excludeExtraneousValues: true, // 객체내 dto에서 불필요한 내용 제거
+      },
+    );
     return { roomId, messages: messages };
   }
 

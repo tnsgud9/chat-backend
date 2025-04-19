@@ -1,7 +1,14 @@
-import { ArrayNotEmpty, IsArray, IsMongoId, IsString } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEnum,
+  IsMongoId,
+  IsString,
+} from 'class-validator';
 import { Types } from 'mongoose';
 import { ChatRoomDto } from 'src/common/dto/chatroom.dto';
 import { MessageDto } from 'src/common/dto/message.dto';
+import { ContentType } from 'src/common/enums/content.enum';
 
 export class ChatRoomsResponseDto {
   chatrooms: ChatRoomDto[];
@@ -34,3 +41,16 @@ export class ChatRoomInfoResponseDto {
 
   messages: MessageDto[];
 }
+
+export class ChatRoomSendMessageRequestDto {
+  @IsString()
+  content: string;
+
+  @IsEnum(ContentType)
+  contentType: ContentType;
+}
+
+// export class ChatRoomSendMessageResponeDto {
+//   @IsString()
+//   content: string;
+// }

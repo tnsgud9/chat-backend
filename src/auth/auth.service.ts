@@ -81,4 +81,10 @@ export class AuthService {
       secret: this.configService.config.SECRET_TOKEN,
     });
   }
+
+  public verifyAccessToken(token: string): AccessTokenPayload {
+    return this.jwtService.verify<AccessTokenPayload>(token, {
+      secret: this.configService.config.SECRET_TOKEN,
+    });
+  }
 }
