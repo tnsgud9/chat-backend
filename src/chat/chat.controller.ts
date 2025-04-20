@@ -22,10 +22,15 @@ import { Types } from 'mongoose';
 import { ChatRoomDto } from '../common/dto/chatroom.dto';
 import { MessageDto } from 'src/common/dto/message.dto';
 import { plainToInstance } from 'class-transformer';
+import { AuthService } from 'src/auth/auth.service';
+import { UserDto } from 'src/common/dto/user.dto';
 
 @Controller()
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly authService: AuthService,
+  ) {}
 
   @UseGuards(AuthAccessTokenGuard)
   @Get(ApiRoutes.Chat.ChatRooms)
@@ -41,18 +46,25 @@ export class ChatController {
   @UseGuards(AuthAccessTokenGuard)
   @Get(ApiRoutes.Chat.ChatRoomInfo('roomId'))
   async chatRoomInfo(
-    @Param('roomId') _roomId: string,
+    @Param('roomId') roomIdStr: string,
   ): Promise<ChatRoomInfoResponseDto> {
-    const roomId = new Types.ObjectId(_roomId);
-    // const messages = await this.chatService.getMessages(roomId);
-    const messages = plainToInstance(
-      MessageDto,
-      await this.chatService.getMessages(roomId),
-      {
-        excludeExtraneousValues: true, // 객체내 dto에서 불필요한 내용 제거
-      },
+    const roomId = new Types.ObjectId(roomIdStr);
+    const roomInfo = await this.chatService.getChatRoom(roomId);
+    if (!roomInfo) {
+      throw new NotFoundException('해당 채팅방의 대한 정보가 없습니다.');
+    }
+    const participants = await this.authService.getAuthInfos(
+      roomInfo.encryptedPrivateKeys.map((it) => it.userId),
     );
-    return { roomId, messages: messages };
+    if (!participants) {
+      throw new NotFoundException('채팅방 사용자의 대한 정보가 없습니다.');
+    }
+    const messages = await this.chatService.getMessages(roomId);
+    return {
+      roomId,
+      messages: messages.map((it) => new MessageDto(it)),
+      participants: participants.map((it) => new UserDto(it)),
+    };
   }
 
   @UseGuards(AuthAccessTokenGuard)

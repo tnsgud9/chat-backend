@@ -22,6 +22,8 @@ export class Message {
 
   @Prop({ required: true })
   content: string;
+
+  createdAt: Date;
 }
 
 // Message 클래스를 바탕으로 Mongoose 스키마를 생성

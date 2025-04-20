@@ -50,6 +50,10 @@ export class ChatService {
       .exec();
   }
 
+  public async getChatRoom(roomId: Types.ObjectId) {
+    return await this.chatroomModel.findById(roomId).exec();
+  }
+
   public async createChatRoom(
     users: AuthDocument[],
   ): Promise<ChatRoomDocument> {

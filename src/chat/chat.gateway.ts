@@ -31,8 +31,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket) {
     const cookies = client.handshake.headers.cookie;
+    // handleConnection에서는 guard를 지원하지 않는다. 그래서 내부에서 검증 로직을 구현한다.
 
     if (!cookies) {
+      console.log(`[Client:${client.id}] 쿠키가 없어서 연결 종료`);
       return client.disconnect();
     }
 
@@ -44,10 +46,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .find(([key]) => key === 'access_token')?.[1];
 
     if (!token) {
+      console.log(
+        `[Client:${client.id}] 유효한 access_token이 없어서 연결 종료`,
+      );
       return client.disconnect();
     }
 
-    const payload = this.authService.verifyAccessToken(token); // JWT_SECRET은 환경 변수에서
+    const payload = this.authService.tryVerifyAccessToken(token); // JWT_SECRET은 환경 변수에서
+    if (!payload) {
+      console.log(`[Client:${client.id}] access_token 검증 실패로 연결 종료`);
+      return client.disconnect();
+    }
 
     client.data = payload;
 
@@ -55,15 +64,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (typeof room === 'string') {
       await client.join(room);
-      console.log(`Client ${client.id} joined room: ${room}`);
-      this.server.to(room).emit('notice', `User ${client.id} joined the room`);
+      console.log(
+        `[Client:${client.id}] [Nickname:${payload.nickname}] 방에 참여함: ${room}`,
+      );
     } else {
-      console.warn(`Client ${client.id} did not provide a valid room`);
+      console.warn(
+        `[Client:${client.id}] [Nickname:${payload.nickname}] 유효한 방 정보를 제공하지 않음`,
+      );
+      return client.disconnect();
     }
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+    const payload = client.data as AccessTokenPayload;
+    console.log(
+      `[Client:${client.id}] [Nickname:${payload.nickname}] 연결 종료됨`,
+    );
   }
 
   @SubscribeMessage('message')
@@ -72,7 +88,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
     const { room } = client.handshake.query;
-    console.log(`Received message from ${client.id}: ${content}`);
+    const payload = client.data as AccessTokenPayload;
+    console.log(
+      `[Client:${client.id}] [Nickname:${payload.nickname}] 메시지 수신: ${content}`,
+    );
     const token = client.data as AccessTokenPayload;
     await this.chatService.createMessage(
       new Types.ObjectId(token.id),
@@ -80,7 +99,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       content,
       contentType,
     );
-    // 해당 방에 있는 다른 클라이언트들에게만 메시지를 보냄 (보낸 사람 제외)
+    // 해당 방에 있는 다른 Client들에게만 메시지를 보냄 (보낸 사람 제외)
     client.to(room as string).emit('message', {
       sender: new Types.ObjectId(token.id),
       content: content,

@@ -8,6 +8,7 @@ import {
 import { Types } from 'mongoose';
 import { ChatRoomDto } from 'src/common/dto/chatroom.dto';
 import { MessageDto } from 'src/common/dto/message.dto';
+import { UserDto } from 'src/common/dto/user.dto';
 import { ContentType } from 'src/common/enums/content.enum';
 
 export class ChatRoomsResponseDto {
@@ -39,6 +40,7 @@ export class ChatRoomInfoResponseDto {
   @IsMongoId()
   roomId: Types.ObjectId;
 
+  participants: UserDto[];
   messages: MessageDto[];
 }
 

@@ -4,7 +4,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AccessTokenPayload } from '../common/types/jwt.type';
 import { Request } from 'express';
 import { ConfigService } from 'src/config/config.service';
-import { Socket } from 'socket.io';
 
 @Injectable()
 export class AuthAccessTokenStrategy extends PassportStrategy(
