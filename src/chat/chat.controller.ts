@@ -23,7 +23,7 @@ import { ChatRoomDto } from '../common/dto/chatroom.dto';
 import { MessageDto } from 'src/common/dto/message.dto';
 import { plainToInstance } from 'class-transformer';
 import { AuthService } from 'src/auth/auth.service';
-import { UserDto } from 'src/common/dto/user.dto';
+import { UserInfoDto } from 'src/common/dto/userinfo.dto';
 
 @Controller()
 export class ChatController {
@@ -63,7 +63,7 @@ export class ChatController {
     return {
       roomId,
       messages: messages.map((it) => new MessageDto(it)),
-      participants: participants.map((it) => new UserDto(it)),
+      participants: participants.map((it) => new UserInfoDto(it)),
     };
   }
 
