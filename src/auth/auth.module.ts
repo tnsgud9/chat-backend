@@ -9,5 +9,6 @@ import { AuthAccessTokenStrategy } from './auth.strategy';
   imports: [],
   controllers: [AuthController],
   providers: [AuthService, AuthAccessTokenGuard, AuthAccessTokenStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}
