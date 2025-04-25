@@ -8,7 +8,7 @@ export type ChatRoomDocument = HydratedDocument<ChatRoom>;
 export class EncryptedPrivateKey {
   @IsMongoId()
   @Prop({ type: Types.ObjectId, required: true })
-  userId: Types.ObjectId;
+  id: Types.ObjectId;
 
   @Prop({ required: true })
   encryptedKey: string;

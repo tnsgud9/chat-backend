@@ -1,17 +1,10 @@
 import { IsMongoId, IsString } from 'class-validator';
-import { Types } from 'mongoose';
-import { ChatRoomDocument } from '../../database/schema/chatroom.schema';
 import { Expose } from 'class-transformer';
 
 export class ChatRoomDto {
-  constructor(chatroomDocument: ChatRoomDocument) {
-    this.id = chatroomDocument.id;
-    this.name = chatroomDocument.name;
-  }
-
-  @Expose()
+  @Expose({ name: '_id' })
   @IsMongoId()
-  id: Types.ObjectId;
+  id: string;
 
   @Expose()
   @IsString()

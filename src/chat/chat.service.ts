@@ -43,10 +43,11 @@ export class ChatService {
       .find({
         encryptedPrivateKeys: {
           $elemMatch: {
-            userId: id.toString(),
+            id: id.toString(),
           },
         },
       })
+      .lean()
       .exec();
   }
 
@@ -64,7 +65,7 @@ export class ChatService {
     // 2. 각 유저의 공개키로 개인키를 암호화하고 배열 형태로 저장
     const encryptedPrivateKeys = users.map(
       (user): EncryptedPrivateKey => ({
-        userId: user.id as Types.ObjectId,
+        id: user._id,
         encryptedKey: hybridEncrypt(user.publicKey, privateKey.toString()),
       }),
     );

@@ -6,7 +6,6 @@ import {
   Length,
   Matches,
 } from 'class-validator';
-import { Types } from 'mongoose';
 
 export class AuthLoginRequest {
   @IsEmail()
@@ -29,7 +28,7 @@ export class AuthLoginResponse {
   accessToken: string;
 
   @IsMongoId()
-  id: Types.ObjectId;
+  id: string;
 
   @IsString()
   publicKey: string;

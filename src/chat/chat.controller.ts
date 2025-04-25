@@ -40,7 +40,11 @@ export class ChatController {
     const chatrooms = await this.chatService.getChatRooms(
       new Types.ObjectId(id),
     );
-    return { chatrooms: chatrooms.map((it) => new ChatRoomDto(it)) };
+    return {
+      chatrooms: plainToInstance(ChatRoomDto, chatrooms, {
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   @UseGuards(AuthAccessTokenGuard)
@@ -54,16 +58,20 @@ export class ChatController {
       throw new NotFoundException('해당 채팅방의 대한 정보가 없습니다.');
     }
     const participants = await this.authService.getAuthInfos(
-      roomInfo.encryptedPrivateKeys.map((it) => it.userId),
+      roomInfo.encryptedPrivateKeys.map((it) => it.id),
     );
     if (!participants) {
       throw new NotFoundException('채팅방 사용자의 대한 정보가 없습니다.');
     }
     const messages = await this.chatService.getMessages(roomId);
     return {
-      roomId,
-      messages: messages.map((it) => new MessageDto(it)),
-      participants: participants.map((it) => new UserInfoDto(it)),
+      roomId: roomIdStr,
+      messages: plainToInstance(MessageDto, messages, {
+        excludeExtraneousValues: true,
+      }),
+      participants: plainToInstance(UserInfoDto, participants, {
+        excludeExtraneousValues: true,
+      }),
     };
   }
 
@@ -74,8 +82,10 @@ export class ChatController {
     @AuthInfo() authInfo: AccessTokenPayload,
   ): Promise<ChatRoomCreateResponse> {
     // 1. participantIds auth 정보를 가져온다.
-    const users = await this.chatService.getAccounts(participantIds);
-    if (participantIds.length != users.length) {
+    const participants = await this.chatService.getAccounts(
+      participantIds.map((id) => new Types.ObjectId(id)),
+    );
+    if (participantIds.length != participants.length) {
       throw new NotFoundException('일부 유저들을 찾을 수 없습니다.');
     }
 
@@ -83,14 +93,14 @@ export class ChatController {
     // 3. auth 유저들의 공개키를 기반으로 개인키를 암호화한다.
     // 4. DB에 저장한다.
     const { id, name, publicKey, encryptedPrivateKeys } =
-      await this.chatService.createChatRoom(users);
+      await this.chatService.createChatRoom(participants);
     // 생성된 document 가공하여 반환
     return {
       id,
       name,
       publicKey,
       encryptedPrivateKey: encryptedPrivateKeys.find(
-        (it) => it.userId == new Types.ObjectId(authInfo.id),
+        (it) => it.id.toString() === authInfo.id,
       )!.encryptedKey,
     };
   }

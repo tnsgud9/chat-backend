@@ -5,7 +5,6 @@ import {
   IsMongoId,
   IsString,
 } from 'class-validator';
-import { Types } from 'mongoose';
 import { ChatRoomDto } from 'src/common/dto/chatroom.dto';
 import { MessageDto } from 'src/common/dto/message.dto';
 import { UserInfoDto } from 'src/common/dto/userinfo.dto';
@@ -21,12 +20,12 @@ export class ChatRoomCreateRequest {
   @IsArray()
   @ArrayNotEmpty()
   @IsMongoId({ each: true })
-  participantIds: Types.ObjectId[];
+  participantIds: string[];
 }
 
 export class ChatRoomCreateResponse {
   @IsMongoId()
-  id: Types.ObjectId;
+  id: string;
 
   @IsString()
   name: string;
@@ -41,7 +40,7 @@ export class ChatRoomCreateResponse {
 export class ChatRoomInfoRequest {}
 export class ChatRoomInfoResponse {
   @IsMongoId()
-  roomId: Types.ObjectId;
+  roomId: string;
 
   participants: UserInfoDto[];
   messages: MessageDto[];
