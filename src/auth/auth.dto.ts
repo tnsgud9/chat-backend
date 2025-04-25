@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { Types } from 'mongoose';
 
-export class AuthLoginRequestDto {
+export class AuthLoginRequest {
   @IsEmail()
   username: string;
 
@@ -18,7 +18,7 @@ export class AuthLoginRequestDto {
   password: string;
 }
 
-export class AuthLoginResponseDto {
+export class AuthLoginResponse {
   @IsNotEmpty()
   @IsString()
   @Length(3, 20)
@@ -38,7 +38,7 @@ export class AuthLoginResponseDto {
   encryptedPrivateKey: string;
 }
 
-export class AuthSignupRequestDto {
+export class AuthSignupRequest {
   @IsEmail()
   username: string;
 
@@ -54,7 +54,7 @@ export class AuthSignupRequestDto {
   nickname: string;
 }
 
-export class AuthSignupResponseDto {
+export class AuthSignupResponse {
   @IsNotEmpty()
   @IsString()
   @Length(3, 20)

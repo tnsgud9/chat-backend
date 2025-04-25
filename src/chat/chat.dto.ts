@@ -11,18 +11,20 @@ import { MessageDto } from 'src/common/dto/message.dto';
 import { UserInfoDto } from 'src/common/dto/userinfo.dto';
 import { ContentType } from 'src/common/enums/content.enum';
 
-export class ChatRoomsResponseDto {
+export class ChatRoomsResquest {}
+
+export class ChatRoomsResponse {
   chatrooms: ChatRoomDto[];
 }
 
-export class ChatRoomCreateRequestDto {
+export class ChatRoomCreateRequest {
   @IsArray()
   @ArrayNotEmpty()
   @IsMongoId({ each: true })
   participantIds: Types.ObjectId[];
 }
 
-export class ChatRoomCreateResponseDto {
+export class ChatRoomCreateResponse {
   @IsMongoId()
   id: Types.ObjectId;
 
@@ -36,7 +38,8 @@ export class ChatRoomCreateResponseDto {
   encryptedPrivateKey: string;
 }
 
-export class ChatRoomInfoResponseDto {
+export class ChatRoomInfoRequest {}
+export class ChatRoomInfoResponse {
   @IsMongoId()
   roomId: Types.ObjectId;
 
@@ -44,7 +47,7 @@ export class ChatRoomInfoResponseDto {
   messages: MessageDto[];
 }
 
-export class ChatRoomSendMessageRequestDto {
+export class ChatRoomSendMessageRequest {
   @IsString()
   content: string;
 

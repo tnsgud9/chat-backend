@@ -9,10 +9,10 @@ import {
 } from '@nestjs/common';
 import { ApiRoutes } from 'src/common/constants/api-routes';
 import {
-  ChatRoomInfoResponseDto,
-  ChatRoomsResponseDto,
-  ChatRoomCreateRequestDto,
-  ChatRoomCreateResponseDto,
+  ChatRoomInfoResponse,
+  ChatRoomsResponse,
+  ChatRoomCreateRequest,
+  ChatRoomCreateResponse,
 } from './chat.dto';
 import { ChatService } from './chat.service';
 import { AuthAccessTokenGuard } from '../auth/auth.guard';
@@ -36,7 +36,7 @@ export class ChatController {
   @Get(ApiRoutes.Chat.ChatRooms)
   async chatRooms(
     @AuthInfo() { id }: AccessTokenPayload,
-  ): Promise<ChatRoomsResponseDto> {
+  ): Promise<ChatRoomsResponse> {
     const chatrooms = await this.chatService.getChatRooms(
       new Types.ObjectId(id),
     );
@@ -47,7 +47,7 @@ export class ChatController {
   @Get(ApiRoutes.Chat.ChatRoomInfo('roomId'))
   async chatRoomInfo(
     @Param('roomId') roomIdStr: string,
-  ): Promise<ChatRoomInfoResponseDto> {
+  ): Promise<ChatRoomInfoResponse> {
     const roomId = new Types.ObjectId(roomIdStr);
     const roomInfo = await this.chatService.getChatRoom(roomId);
     if (!roomInfo) {
@@ -70,9 +70,9 @@ export class ChatController {
   @UseGuards(AuthAccessTokenGuard)
   @Post(ApiRoutes.Chat.ChatRoomCreate)
   async chatRoomCreate(
-    @Body() { participantIds }: ChatRoomCreateRequestDto,
+    @Body() { participantIds }: ChatRoomCreateRequest,
     @AuthInfo() authInfo: AccessTokenPayload,
-  ): Promise<ChatRoomCreateResponseDto> {
+  ): Promise<ChatRoomCreateResponse> {
     // 1. participantIds auth 정보를 가져온다.
     const users = await this.chatService.getAccounts(participantIds);
     if (participantIds.length != users.length) {

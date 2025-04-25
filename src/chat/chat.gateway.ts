@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { ChatRoomSendMessageRequestDto } from './chat.dto';
+import { ChatRoomSendMessageRequest } from './chat.dto';
 import { Types } from 'mongoose';
 import { MessageDto } from 'src/common/dto/message.dto';
 import { AccessTokenPayload } from 'src/common/types/jwt.type';
@@ -84,7 +84,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('message')
   async handleMessage(
-    @MessageBody() { content, contentType }: ChatRoomSendMessageRequestDto,
+    @MessageBody() { content, contentType }: ChatRoomSendMessageRequest,
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
     const { room } = client.handshake.query;

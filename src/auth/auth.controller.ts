@@ -12,10 +12,10 @@ import { Response } from 'express';
 import { ApiRoutes } from 'src/common/constants/api-routes';
 import { AuthService } from './auth.service';
 import {
-  AuthLoginRequestDto,
-  AuthLoginResponseDto,
-  AuthSignupRequestDto,
-  AuthSignupResponseDto,
+  AuthLoginRequest,
+  AuthLoginResponse,
+  AuthSignupRequest,
+  AuthSignupResponse,
 } from './auth.dto';
 
 @Controller()
@@ -24,9 +24,9 @@ export class AuthController {
   // 로그인 API
   @Post(ApiRoutes.Auth.Login)
   async authLogin(
-    @Body() authLoginDto: AuthLoginRequestDto,
+    @Body() authLoginDto: AuthLoginRequest,
     @Res({ passthrough: true }) res: Response, // passthrough는 NestJS의 자동 응답 처리를 유지하면서 Response 객체를 사용할 수 있도록 해주는 기능
-  ): Promise<AuthLoginResponseDto> {
+  ): Promise<AuthLoginResponse> {
     const { username, password } = authLoginDto;
 
     const authEntity = await this.authService.getAccount(username, password);
@@ -57,9 +57,9 @@ export class AuthController {
 
   @Post(ApiRoutes.Auth.Signup)
   async authSignup(
-    @Body() authSignupDto: AuthSignupRequestDto,
+    @Body() authSignupDto: AuthSignupRequest,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AuthSignupResponseDto> {
+  ): Promise<AuthSignupResponse> {
     const { username, password, nickname } = authSignupDto;
 
     const existingUser = await this.authService.getAccount(username, password);
