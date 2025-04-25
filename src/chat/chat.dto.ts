@@ -1,9 +1,14 @@
 import {
   ArrayNotEmpty,
   IsArray,
+  IsDate,
+  IsEmpty,
   IsEnum,
   IsMongoId,
+  IsNumber,
+  IsOptional,
   IsString,
+  Max,
 } from 'class-validator';
 import { ChatRoomDto } from 'src/common/dto/chatroom.dto';
 import { MessageDto } from 'src/common/dto/message.dto';
@@ -37,7 +42,16 @@ export class ChatRoomCreateResponse {
   encryptedPrivateKey: string;
 }
 
-export class ChatRoomInfoRequest {}
+export class ChatRoomInfoRequestQuery {
+  @IsOptional()
+  @IsDate()
+  before?: Date; // 이전 메시지의 _id (또는 createdAt)
+
+  @IsOptional()
+  @IsNumber()
+  @Max(20)
+  limit?: number;
+}
 export class ChatRoomInfoResponse {
   @IsMongoId()
   roomId: string;

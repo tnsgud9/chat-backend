@@ -31,10 +31,18 @@ export class ChatService {
     return await this.authModel.find({ _id: { $in: ids } }).exec();
   }
 
-  public async getMessages(id: Types.ObjectId) {
+  public async getMessages(
+    id: Types.ObjectId,
+    limit: number = 20,
+    before?: Date,
+  ) {
     return await this.messageModel
-      .find({ chatRoomId: id })
-      .sort({ _id: 1 })
+      .find({
+        chatRoomId: id,
+        ...(before && { createdAt: { $lt: before } }),
+      })
+      .sort({ createdAt: -1 }) // 최신 -> 오래된 순
+      .limit(limit)
       .exec();
   }
 
@@ -43,11 +51,10 @@ export class ChatService {
       .find({
         encryptedPrivateKeys: {
           $elemMatch: {
-            id: id.toString(),
+            id,
           },
         },
       })
-      .lean()
       .exec();
   }
 

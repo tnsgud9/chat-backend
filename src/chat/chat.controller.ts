@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiRoutes } from 'src/common/constants/api-routes';
@@ -13,6 +14,7 @@ import {
   ChatRoomsResponse,
   ChatRoomCreateRequest,
   ChatRoomCreateResponse,
+  ChatRoomInfoRequestQuery,
 } from './chat.dto';
 import { ChatService } from './chat.service';
 import { AuthAccessTokenGuard } from '../auth/auth.guard';
@@ -51,6 +53,7 @@ export class ChatController {
   @Get(ApiRoutes.Chat.ChatRoomInfo('roomId'))
   async chatRoomInfo(
     @Param('roomId') roomIdStr: string,
+    @Query() { before, limit }: ChatRoomInfoRequestQuery,
   ): Promise<ChatRoomInfoResponse> {
     const roomId = new Types.ObjectId(roomIdStr);
     const roomInfo = await this.chatService.getChatRoom(roomId);
@@ -63,7 +66,7 @@ export class ChatController {
     if (!participants) {
       throw new NotFoundException('채팅방 사용자의 대한 정보가 없습니다.');
     }
-    const messages = await this.chatService.getMessages(roomId);
+    const messages = await this.chatService.getMessages(roomId, limit, before);
     return {
       roomId: roomIdStr,
       messages: plainToInstance(MessageDto, messages, {
