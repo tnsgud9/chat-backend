@@ -65,11 +65,11 @@ export class ChatService {
   public async createChatRoom(
     users: AuthDocument[],
   ): Promise<ChatRoomDocument> {
-    // 2. 채팅방을 위한 공개키, 개인키를 생성한다.
+    // 채팅방을 위한 공개키, 개인키를 생성한다.
     const { publicKey, privateKey } = generateRSAKeyPair();
 
-    // 3. auth 유저들의 공개키를 기반으로 개인키를 암호화한다.
-    // 2. 각 유저의 공개키로 개인키를 암호화하고 배열 형태로 저장
+    // auth 유저들의 공개키를 기반으로 개인키를 암호화한다.
+    // 각 유저의 공개키로 개인키를 암호화하고 배열 형태로 저장
     const encryptedPrivateKeys = users.map(
       (user): EncryptedPrivateKey => ({
         id: user._id,

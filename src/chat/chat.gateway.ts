@@ -19,27 +19,28 @@ import { plainToInstance } from 'class-transformer';
 @WebSocketGateway({
   cors: {
     origin: '*', // 프론트엔드 주소
-    credentials: true, // 쿠키를 허용하려면 반드시 true
+    credentials: true, // 쿠키 허용
   },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+
   constructor(
     private readonly chatService: ChatService,
     private readonly authService: AuthService,
   ) {}
 
+  // handleConnection 에서는 guard를 지원하지 않는다. 그래서 내부에서 검증 로직을 구현한다.
   async handleConnection(client: Socket) {
+    //#region COOKIE_VALIDATION
     const cookies = client.handshake.headers.cookie;
-    // handleConnection에서는 guard를 지원하지 않는다. 그래서 내부에서 검증 로직을 구현한다.
-
     if (!cookies) {
       console.log(`[Client:${client.id}] 쿠키가 없어서 연결 종료`);
       return client.disconnect();
     }
 
-    // 쿠키에서 access_token을 파싱한다.
+    // 쿠키에서 access_token 수동 파싱
     const token = cookies
       .split(';')
       .map((c) => c.trim())
@@ -53,11 +54,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return client.disconnect();
     }
 
-    const payload = this.authService.tryVerifyAccessToken(token); // JWT_SECRET은 환경 변수에서
+    // access_token 유효성 검증
+    const payload = this.authService.tryVerifyAccessToken(token);
     if (!payload) {
       console.log(`[Client:${client.id}] access_token 검증 실패로 연결 종료`);
       return client.disconnect();
     }
+    //#endregion
 
     client.data = payload;
 
@@ -100,7 +103,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       content,
       contentType,
     );
-    // 해당 방에 있는 다른 Client들에게만 메시지를 보냄 (보낸 사람 제외)
+    // 해당 방에 있는 다른 Client들 에게만 메시지를 보냄 (보낸 사람 제외)
     client.to(room as string).emit('message', {
       sender: new Types.ObjectId(token.id),
       content: content,
