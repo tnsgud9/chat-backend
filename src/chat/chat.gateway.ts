@@ -108,16 +108,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(
       `[Client:${client.id}] [Nickname:${payload.nickname}] 메시지 수신: ${content}`,
     );
-    const token = client.data as AccessTokenPayload;
     const message = await this.chatService.createMessage(
-      new Types.ObjectId(token.id),
+      new Types.ObjectId(payload.id),
       new Types.ObjectId(room as string),
       content,
       contentType,
     );
     // 해당 방에 있는 다른 Client들 에게만 메시지를 보냄 (보낸 사람 제외)
     client.to(room as string).emit('message', {
-      sender: new Types.ObjectId(token.id),
+      sender: new Types.ObjectId(payload.id),
       content: content,
       contentType: contentType,
     } as unknown as MessageDto);
