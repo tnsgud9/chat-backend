@@ -13,7 +13,7 @@ import {
   generateRSAKeyPair,
   hybridEncrypt,
 } from '../common/utils/crypto-helper';
-import { Message } from 'src/database/schema/message.schema';
+import { Message, MessageDocument } from 'src/database/schema/message.schema';
 import { ContentType } from 'src/common/enums/content.enum';
 
 @Injectable()
@@ -92,7 +92,7 @@ export class ChatService {
     chatRoomId: Types.ObjectId,
     content: string,
     contentType: ContentType = ContentType.MESSAGE,
-  ) {
+  ): Promise<MessageDocument> {
     return await this.messageModel.insertOne({
       chatRoomId,
       content,

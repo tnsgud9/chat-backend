@@ -14,6 +14,7 @@ import { Types } from 'mongoose';
 import { MessageDto } from 'src/common/dto/message.dto';
 import { AccessTokenPayload } from 'src/common/types/jwt.type';
 import { AuthService } from 'src/auth/auth.service';
+import { plainToInstance } from 'class-transformer';
 
 @WebSocketGateway({
   cors: {
@@ -86,14 +87,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleMessage(
     @MessageBody() { content, contentType }: ChatRoomSendMessageRequest,
     @ConnectedSocket() client: Socket,
-  ): Promise<void> {
+  ): Promise<MessageDto> {
     const { room } = client.handshake.query;
     const payload = client.data as AccessTokenPayload;
     console.log(
       `[Client:${client.id}] [Nickname:${payload.nickname}] 메시지 수신: ${content}`,
     );
     const token = client.data as AccessTokenPayload;
-    await this.chatService.createMessage(
+    const message = await this.chatService.createMessage(
       new Types.ObjectId(token.id),
       new Types.ObjectId(room as string),
       content,
@@ -105,5 +106,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       content: content,
       contentType: contentType,
     } as unknown as MessageDto);
+    return plainToInstance(MessageDto, message, {
+      excludeExtraneousValues: true,
+    });
   }
 }
