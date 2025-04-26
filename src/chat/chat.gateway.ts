@@ -64,19 +64,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.data = payload;
 
-    const { room } = client.handshake.query;
+    const { room } = client.handshake.query as { room: string };
+    const roomInfo = await this.chatService.getChatRoom(
+      new Types.ObjectId(room),
+    );
 
-    if (typeof room === 'string') {
-      await client.join(room);
-      console.log(
-        `[Client:${client.id}] [Nickname:${payload.nickname}] 방에 참여함: ${room}`,
-      );
-    } else {
+    if (!roomInfo) {
       console.warn(
         `[Client:${client.id}] [Nickname:${payload.nickname}] 유효한 방 정보를 제공하지 않음`,
       );
       return client.disconnect();
     }
+    if (
+      !roomInfo.encryptedPrivateKeys.some(
+        (it) => it.id.toString() == payload.id,
+      )
+    ) {
+      console.warn(
+        `[Client:${client.id}] [Nickname:${payload.nickname}] 해당 방에 등록되지 않음`,
+      );
+      return client.disconnect();
+    }
+    console.log(
+      `[Client:${client.id}] [Nickname:${payload.nickname}] 방에 참여함: ${room}`,
+    );
+    await client.join(room);
   }
 
   handleDisconnect(client: Socket) {
