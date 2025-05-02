@@ -1,0 +1,47 @@
+info:
+  title: End-to-End Encrypted Chat API (종단간 암호화 채팅 API)
+  description: |
+    This API provides a secure, real-time messaging service using end-to-end encryption (E2EE).
+    Built with NestJS and MongoDB (via Mongoose), it enables users to send and receive messages
+    with strong privacy guarantees. All messages are encrypted on the client side and cannot be
+    decrypted by the server.
+
+    본 API는 종단간 암호화(E2EE)를 기반으로 안전한 실시간 메시징 서비스를 제공한다.
+    NestJS와 MongoDB(Mongoose)를 기반으로 구축되었으며, 모든 메시지는 클라이언트 측에서 암호화되며 서버는 이를 복호화할 수 없다.
+  version: 0.1.0
+  termsOfService: https://example.com/terms
+  contact:
+    name: Dev Team (개발팀)
+    url: https://example.com/support
+    email: support@example.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Development Server (개발 서버)
+  - url: https://api.example.com/v1
+    description: Production Server (운영 서버)
+
+tags:
+  - name: Auth
+    description: Authentication APIs (인증 관련 API)
+  - name: Chat
+    description: Chat Information History and Message APIs (채팅 정보 기록 및 메시지 관리 API)
+  - name: User
+    description: User profile and presence APIs (사용자 프로필 및 접속 상태 관련 API)
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+      description: >
+        이 API는 JWT 토큰을 access_token이라는 이름의 HTTP 쿠키에 저장하여 인증을 수행한다.
+        클라이언트는 로그인 후 받은 access_token 쿠키를 요청과 함께 전송해야 한다.
+        서버는 해당 쿠키를 확인하여 사용자를 인증한다.
+
+security:
+  - cookieAuth: []
