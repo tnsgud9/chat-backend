@@ -33,6 +33,7 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
+import { ChatRoomDocument } from 'src/database/schema/chatroom.schema';
 
 @ApiCookieAuth('access_token')
 @Controller()
@@ -54,16 +55,31 @@ export class ChatController {
     type: ChatRoomsResponse,
   })
   async chatRooms(
-    @AuthInfo() { id }: AccessTokenPayload,
+    @AuthInfo() { id: idStr }: AccessTokenPayload, // JWT 토큰에서 사용자 ID를 추출 (idStr은 문자열)
   ): Promise<ChatRoomsResponse> {
-    const chatrooms = await this.chatService.getChatRooms(
-      new Types.ObjectId(id),
+    // 문자열로 되어 있는 사용자 ID를 MongoDB의 ObjectId 타입으로 변환
+    const id = new Types.ObjectId(idStr);
+
+    // 현재 사용자가 참여 중인 모든 채팅방 정보를 DB에서 조회
+    const chatrooms: ChatRoomDocument[] =
+      await this.chatService.getChatRooms(id);
+
+    // 조회된 채팅방 문서를 클라이언트에 전달할 DTO 형식으로 변환
+    const chatroomDtos: ChatRoomDto[] = chatrooms.map(
+      (chatroom: ChatRoomDocument) => {
+        // Mongoose 문서(chatroom)를 ChatRoomDto 인스턴스로 변환
+        const instance = plainToInstance(ChatRoomDto, chatroom, {
+          excludeExtraneousValues: true, // @Expose된 필드만 변환 대상으로 포함
+        });
+
+        // 해당 채팅방에서 현재 사용자에게 대응하는 개인 암호화 키를 찾아 DTO에 포함
+        instance.encryptedPrivateKey = chatroom.encryptedPrivateKeys.find(
+          (it) => it.id.equals(id),
+        )!.encryptedKey;
+        return instance;
+      },
     );
-    return {
-      chatrooms: plainToInstance(ChatRoomDto, chatrooms, {
-        excludeExtraneousValues: true,
-      }),
-    };
+    return { chatrooms: chatroomDtos };
   }
 
   @UseGuards(AuthAccessTokenGuard)

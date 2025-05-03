@@ -19,6 +19,22 @@ export class ChatRoomDto {
   })
   name: string;
 
+  @Expose()
+  @IsString()
+  @ApiProperty({
+    example: 'MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKj...',
+    description: '채팅방의 공개 키 (메시지 암호화에 사용)',
+  })
+  publicKey: string;
+
+  @Expose()
+  @IsString()
+  @ApiProperty({
+    example: 'U2FsdGVkX1+3hN47nZ+7cqZhTC7fsPv...',
+    description: '유저 공개키로 암호화된 채팅방 개인 키',
+  })
+  encryptedPrivateKey: string;
+
   // @ApiProperty({ example: '마지막 메시지 내용', description: '채팅방의 마지막 메시지 (선택사항)' })
   // lastMessage: string;
 }
