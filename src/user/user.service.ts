@@ -15,6 +15,14 @@ export class UserService {
     return user;
   }
 
+  public async getAccountInfosByNickname(nickname: string) {
+    return this.authModel
+      .find({
+        nickname: { $regex: nickname, $options: 'i' }, // name 필드만 검색
+      })
+      .exec();
+  }
+
   // public async getChatRooms(nickname: string) {
   //   const user = await this.authModel.findOne({ nickname }).exec();
   //   return user;

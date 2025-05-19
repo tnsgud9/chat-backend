@@ -1,4 +1,5 @@
 import { IsString } from 'class-validator';
+import { UserInfoDto } from 'src/common/dto/userinfo.dto';
 
 export class UserSearchQueryRequestDto {
   @IsString()
@@ -6,7 +7,5 @@ export class UserSearchQueryRequestDto {
 }
 
 export class UserSearchResponseDto {
-  id: string;
-  nickname: string;
-  publicKey: string;
+  userInfos: UserInfoDto[];
 }
