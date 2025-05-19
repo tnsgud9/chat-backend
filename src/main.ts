@@ -7,6 +7,11 @@ import { setupSwagger } from './swagger.config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: true,
+    credentials: true, // 필요한 경우 (예: 쿠키 포함 요청)
+  });
+
   setupSwagger(app);
 
   app.useGlobalPipes(
