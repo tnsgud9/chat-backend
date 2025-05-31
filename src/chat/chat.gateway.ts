@@ -114,14 +114,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       content,
       contentType,
     );
-    // 해당 방에 있는 다른 Client들 에게만 메시지를 보냄 (보낸 사람 제외)
-    client.to(room as string).emit('message', {
-      sender: new Types.ObjectId(payload.id),
-      content: content,
-      contentType: contentType,
-    } as unknown as MessageDto);
-    return plainToInstance(MessageDto, message, {
+    const messageDto = plainToInstance(MessageDto, message, {
       excludeExtraneousValues: true,
     });
+    // 해당 방에 있는 다른 Client들 에게만 메시지를 보냄 (보낸 사람 제외)
+    client.to(room as string).emit('message', messageDto);
+    return messageDto;
   }
 }

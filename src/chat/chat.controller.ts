@@ -149,10 +149,11 @@ export class ChatController {
     @AuthInfo() authInfo: AccessTokenPayload,
   ): Promise<ChatRoomCreateResponse> {
     // 1. participantIds auth 정보를 가져온다.
-    const participants = await this.chatService.getAccounts(
-      participantIds.map((id) => new Types.ObjectId(id)),
-    );
-    if (participantIds.length != participants.length) {
+    const participants = await this.chatService.getAccounts([
+      ...participantIds.map((id) => new Types.ObjectId(id)),
+      new Types.ObjectId(authInfo.id),
+    ]);
+    if (participantIds.length + 1 != participants.length) {
       throw new NotFoundException('일부 유저들을 찾을 수 없습니다.');
     }
 
