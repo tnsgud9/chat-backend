@@ -41,7 +41,7 @@ export class ChatService {
         chatRoomId: id,
         ...(before && { createdAt: { $lt: before } }),
       })
-      .sort({ createdAt: -1 }) // 최신 -> 오래된 순
+      .sort({ createdAt: 1 }) // 최신 -> 오래된 순
       .limit(limit)
       .exec();
   }

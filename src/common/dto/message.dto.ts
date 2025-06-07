@@ -1,11 +1,12 @@
 import { IsDate, IsEnum, IsMongoId, IsString } from 'class-validator';
 import { ContentType } from '../enums/content.enum';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class MessageDto {
   @Expose()
   @IsMongoId()
+  @Type(() => String)
   @ApiProperty({
     example: '6814f40ec02378f498960ea8',
     description: '보낸 사람의 유저 ID',
