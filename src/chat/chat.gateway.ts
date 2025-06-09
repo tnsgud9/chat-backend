@@ -18,7 +18,7 @@ import { plainToInstance } from 'class-transformer';
 
 @WebSocketGateway({
   cors: {
-    origin: '*', // 프론트엔드 주소
+    origin: ['http://localhost:5174', 'http://localhost:5173'], // 프론트엔드 주소
     credentials: true, // 쿠키 허용
   },
 })
