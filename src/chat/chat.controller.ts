@@ -26,16 +26,8 @@ import { MessageDto } from 'src/common/dto/message.dto';
 import { plainToInstance } from 'class-transformer';
 import { AuthService } from 'src/auth/auth.service';
 import { UserInfoDto } from 'src/common/dto/userinfo.dto';
-import {
-  ApiCookieAuth,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-} from '@nestjs/swagger';
 import { ChatRoomDocument } from 'src/database/schema/chatroom.schema';
 
-@ApiCookieAuth('access_token')
 @Controller()
 export class ChatController {
   constructor(
@@ -45,15 +37,6 @@ export class ChatController {
 
   @UseGuards(AuthAccessTokenGuard)
   @Get(ApiRoutes.Chat.ChatRooms)
-  @ApiOperation({
-    summary: '채팅방 목록 조회',
-    description: '유저가 참여 중인 채팅방 목록을 조회함.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: '채팅방 목록을 반환함.',
-    type: ChatRoomsResponse,
-  })
   async chatRooms(
     @AuthInfo() { id: idStr }: AccessTokenPayload, // JWT 토큰에서 사용자 ID를 추출 (idStr은 문자열)
   ): Promise<ChatRoomsResponse> {
@@ -84,27 +67,6 @@ export class ChatController {
 
   @UseGuards(AuthAccessTokenGuard)
   @Get(ApiRoutes.Chat.ChatRoomInfo('roomId'))
-  @ApiOperation({
-    summary: '채팅방 상세 조회',
-    description:
-      '특정 채팅방의 메시지 및 참여자 정보를 조회함. 이전 메시지 기준으로 페이징 가능함.',
-  })
-  @ApiParam({ name: 'roomId', description: '채팅방의 MongoDB ID' })
-  @ApiQuery({
-    name: 'before',
-    required: false,
-    description: '이전 메시지 기준 시간',
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: '조회할 메시지 수 (최대 20개)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: '채팅방 정보 및 메시지, 참여자 정보를 반환함.',
-    type: ChatRoomInfoResponse,
-  })
   async chatRoomInfo(
     @Param('roomId') roomIdStr: string,
     @Query() { before, limit }: ChatRoomInfoRequestQuery,
@@ -134,16 +96,6 @@ export class ChatController {
 
   @UseGuards(AuthAccessTokenGuard)
   @Post(ApiRoutes.Chat.ChatRoomCreate)
-  @ApiOperation({
-    summary: '채팅방 생성',
-    description:
-      '지정된 유저들과의 채팅방을 생성함. 공개키는 PEM 형식으로 반환되며, 개인키는 RSA + AES 하이브리드 암호화로 반환됨.',
-  })
-  @ApiResponse({
-    status: 201,
-    description: '생성된 채팅방 정보 및 공개키/개인키를 반환함.',
-    type: ChatRoomCreateResponse,
-  })
   async chatRoomCreate(
     @Body() { participantIds }: ChatRoomCreateRequest,
     @AuthInfo() authInfo: AccessTokenPayload,
