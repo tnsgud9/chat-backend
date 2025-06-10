@@ -102,7 +102,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleMessage(
     @MessageBody() { content, contentType }: ChatRoomSendMessageRequest,
     @ConnectedSocket() client: Socket,
-  ): Promise<void> {
+  ): Promise<MessageDto> {
     const { room } = client.handshake.query;
     const payload = client.data as AccessTokenPayload;
     console.log(
@@ -118,7 +118,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       excludeExtraneousValues: true,
     });
     // 해당 방에 있는 다른 Client들 에게만 메시지를 보냄
-    client.to(room as string).emit('message', messageDto);
-    // return messageDto;
+    this.server.to(room as string).emit('message', messageDto);
+    return messageDto;
   }
 }
