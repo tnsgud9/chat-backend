@@ -6,10 +6,9 @@ import { IoAdapter } from '@nestjs/platform-socket.io'; // WebSocket을 위한 I
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.enableCors({
-    origin: true,
-    credentials: true, // 필요한 경우 (예: 쿠키 포함 요청)
+    origin: 'https://tnsgud9.github.io',
+    credentials: true,
   });
 
   app.useGlobalPipes(
