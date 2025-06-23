@@ -41,9 +41,11 @@ export class AuthController {
     });
 
     res.cookie('access_token', accessToken, {
-      httpOnly: true, // XSS 공격 방지
-      secure: true, // HTTPS 환경에서만 전송 (개발 환경에서는 false 가능)
-      sameSite: 'none', // CSRF 방지
+      httpOnly: true, // JavaScript에서 접근 불가
+      secure: true, // HTTPS에서만 전송 (배포 환경에서 true)
+      sameSite: 'none', // cross-site 요청에서 쿠키를 전송하려면 `None`으로 설정
+      domain: 'ee2e-chat.p-e.kr', // 쿠키가 유효한 도메인 설정
+      path: '/',
     });
 
     return {
