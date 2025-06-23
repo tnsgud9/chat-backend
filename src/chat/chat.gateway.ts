@@ -22,7 +22,7 @@ import { plainToInstance } from 'class-transformer';
       'http://localhost:5174',
       'http://localhost:5173',
       'https://tnsgud9.github.io',
-      'https://55015572.chat-frontend-7e9.pages.dev',
+      'https://chat-frontend-7e9.pages.dev',
     ], // 프론트엔드 주소
     credentials: true, // 쿠키 허용
   },

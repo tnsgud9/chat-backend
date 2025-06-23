@@ -7,7 +7,7 @@ import { IoAdapter } from '@nestjs/platform-socket.io'; // WebSocket을 위한 I
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'https://55015572.chat-frontend-7e9.pages.dev',
+    origin: 'https://chat-frontend-7e9.pages.dev',
     credentials: true,
   });
 
